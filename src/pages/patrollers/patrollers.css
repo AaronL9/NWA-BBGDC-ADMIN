@@ -1,0 +1,56 @@
+.patrollers {
+  width: 80%;
+  margin-inline: auto;
+}
+
+.patroller__chat {
+  position: relative;
+  width: 80%;
+  height: 800px;
+  margin-inline: auto;
+}
+
+.chat__input {
+  margin-top: 8px;
+  /* position: absolute; */
+}
+
+/* ============== PATROLLER CARD ============== */
+.patroller-card {
+  width: 450px;
+  /* border: 1px solid black; */
+  display: flex;
+  background-color: white;
+  box-shadow: rgba(149, 157, 165, 0.2) 0px 8px 24px;
+  padding: 1rem;
+}
+
+.patroller-card__profile-pic {
+  width: 135px;
+  object-fit: cover;
+  border-radius: 50%;
+}
+
+.patroller-card__details {
+  padding-inline: 1rem;
+}
+
+.patroller-card__name {
+  font-size: 1.25rem;
+  font-weight: bold;
+}
+
+.patroller-card__info-list {
+  color: #8a8a8a;
+  list-style-type: none;
+}
+
+.patroller-card__controls {
+  display: flex;
+  gap: 1rem;
+}
+
+.message-list {
+  overflow: auto;
+  height: 500px;
+}

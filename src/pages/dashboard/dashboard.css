@@ -1,0 +1,94 @@
+/* ===== ROOT ===== */
+.dashboard {
+  display: flex;
+  flex-direction: column;
+  margin: 0 auto;
+}
+
+.dashboard h1 {
+  margin-bottom: 3rem;
+}
+
+.dashboard-content {
+  display: flex;
+  justify-content: center;
+}
+/* ====================== */
+
+/* ===== DASHBOARD CARD ===== */
+.dashboard-cards {
+  width: 90%;
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+  gap: 1.5rem;
+}
+
+.dashboard-card {
+  display: flex;
+  gap: 1rem;
+  align-items: center;
+  justify-content: center;
+  border-radius: 0.5rem;
+  background: #1c274c;
+  background: var(--primary-color);
+  height: 8rem;
+  box-shadow: 0px 4px 7px 0px rgba(0, 0, 0, 0.75);
+  padding: 2rem;
+  position: relative;
+  cursor: pointer;
+  transition: all 0.3s ease 0s;
+}
+
+.dashboard-card:hover {
+  box-shadow: 0px 15px 20px rgb(25, 80, 91, 0.4);
+  transform: translateY(-7px);
+}
+
+.dashboard-card--publish {
+  /* background-color: #4CAF50; */
+  background-color: #023020;
+}
+.dashboard-card--reports {
+  background-color: #700e01;
+}
+.dashboard-card--analytics {
+  background-color: #d29e03;
+}
+.dashboard-card--users {
+  background-color: #192346;
+}
+.dashboard-card--investigation {
+  background-color: #8b4000;
+}
+.dashboard-card--articles {
+  background-color: #435274;
+}
+.dashboard-card--crime-records {
+  background-color: #5c4033;
+}
+
+.dashboard-card h2 {
+  color: #fff;
+  font-size: 1.2rem;
+  font-weight: 400;
+}
+
+.dashboard-card__text {
+  text-align: center;
+}
+
+.data__count {
+  color: #fff;
+  position: absolute;
+  bottom: 0;
+  right: 0;
+  padding: 5px 15px;
+}
+
+/* ========================= */
+
+@media (max-width: 1110px) {
+  .dashboard {
+    padding: 0 15px;
+  }
+}

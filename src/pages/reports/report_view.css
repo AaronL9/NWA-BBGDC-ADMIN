@@ -1,0 +1,42 @@
+.report {
+  width: 80%;
+  /* background-color: white; */
+  margin-inline: auto;
+  padding: 1rem;
+  border-radius: 10px;
+  margin-bottom: 1rem;
+}
+
+.report__title {
+  margin-bottom: 2rem;
+  text-align: center;
+}
+
+.report__media {
+  display: flex;
+  gap: 1rem;
+  flex-wrap: wrap;
+  flex: 1;
+  justify-content: flex-start;
+  background-color: white;
+  padding: 1rem;
+}
+.report__media img,
+.report__image-wrapper {
+  width: 250px;
+  height: 200px;
+  object-fit: cover;
+  border-radius: 8px;
+  box-shadow: rgba(149, 157, 165, 0.2) 0px 8px 24px;
+}
+
+.report__archive-btn {
+  padding: 0 1rem;
+  margin-block: 1rem;
+}
+
+.report__map {
+  height: 500px;
+  margin-top: 1rem;
+  margin-inline: auto;
+}

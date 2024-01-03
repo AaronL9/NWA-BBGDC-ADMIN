@@ -1,0 +1,74 @@
+.publish {
+  display: flex;
+  width: 90%;
+  max-width: 1500px;
+  margin: auto;
+  align-items: flex-start;
+  border-radius: 0.8rem;
+  box-shadow: 0px 1px 4px 0px rgba(0, 0, 0, 0.25);
+  padding: 1rem 2rem;
+  justify-content: center;
+}
+
+.publish__form {
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  justify-content: center;
+  gap: 2rem;
+  align-items: center;
+  width: 100%;
+}
+
+/* .publish_image-upload {
+  
+} */
+.publish__description {
+  width: 500px;
+  margin-bottom: 3rem;
+}
+
+.quill {
+  height: 200px;
+}
+
+.publish__form input {
+  width: 500px;
+  display: flex;
+  padding: 0.75rem 1.25rem;
+  align-items: center;
+  border: none;
+  border-radius: 0.2rem;
+  border-bottom: 1.5px solid #1c274c;
+  background: #f6f6f6;
+  box-shadow: 0px 1px 4px 0px rgba(0, 0, 0, 0.25);
+}
+
+.publish__editor {
+  width: 100%;
+}
+
+.publish__btn {
+  display: inline-flex;
+  padding: 1.2rem 2.5rem;
+  justify-content: center;
+  align-items: center;
+  gap: 0.5rem;
+  border-radius: 1.25rem;
+  background: #1c274c;
+  box-shadow: 0px 1px 4px 0px rgba(0, 0, 0, 0.25);
+  color: #fff;
+  outline: none;
+  border: none;
+  font-size: 1rem;
+  margin-bottom: 2rem;
+  cursor: pointer;
+}
+
+.publish__media {
+  width: min(350px, 90%);
+}
+
+.filepond--credits {
+  display: none !important;
+}
