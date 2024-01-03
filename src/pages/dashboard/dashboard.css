@@ -19,8 +19,9 @@
 .dashboard-cards {
   width: 90%;
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+  grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
   gap: 1.5rem;
+  margin-inline: auto;
 }
 
 .dashboard-card {
@@ -29,14 +30,13 @@
   align-items: center;
   justify-content: center;
   border-radius: 0.5rem;
-  background: #1c274c;
-  background: var(--primary-color);
-  height: 8rem;
+  height: 150px;
   box-shadow: 0px 4px 7px 0px rgba(0, 0, 0, 0.75);
   padding: 2rem;
   position: relative;
   cursor: pointer;
   transition: all 0.3s ease 0s;
+  color: white;
 }
 
 .dashboard-card:hover {
@@ -45,7 +45,6 @@
 }
 
 .dashboard-card--publish {
-  /* background-color: #4CAF50; */
   background-color: #023020;
 }
 .dashboard-card--reports {
@@ -57,18 +56,18 @@
 .dashboard-card--users {
   background-color: #192346;
 }
-.dashboard-card--investigation {
-  background-color: #8b4000;
+.dashboard-card--under-assesment {
+  background-color: #cc5500;
 }
 .dashboard-card--articles {
   background-color: #435274;
 }
 .dashboard-card--crime-records {
   background-color: #5c4033;
+  background-color: #192346;
 }
 
 .dashboard-card h2 {
-  color: #fff;
   font-size: 1.2rem;
   font-weight: 400;
 }

@@ -20,18 +20,6 @@ export default function AdminDashboard() {
             })}
           </div>
         </div>
-        <img
-          src="/images/BG.png"
-          alt=""
-          style={{
-            width: "90%",
-            marginInline: "auto",
-            marginBlock: "2rem",
-            borderRadius: "1rem",
-            height: "350px",
-            objectFit: "cover",
-          }}
-        />
       </div>
     </>
   );
