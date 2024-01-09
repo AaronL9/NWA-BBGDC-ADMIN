@@ -15,6 +15,7 @@ export default function AdminDashboard() {
                   path={data.path}
                   icon={data.icon}
                   label={data.label}
+                  folder={data.collectionRef}
                 />
               );
             })}

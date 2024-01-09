@@ -28,52 +28,93 @@
   display: flex;
   gap: 1rem;
   align-items: center;
-  justify-content: center;
+  justify-content: flex-start;
   border-radius: 0.5rem;
   height: 150px;
-  box-shadow: 0px 4px 7px 0px rgba(0, 0, 0, 0.75);
   padding: 2rem;
   position: relative;
-  cursor: pointer;
-  transition: all 0.3s ease 0s;
-  color: white;
+  color: black;
+  background-color: #fdfdfd;
 }
 
-.dashboard-card:hover {
-  box-shadow: 0px 15px 20px rgb(25, 80, 91, 0.4);
-  transform: translateY(-7px);
+.dashboard-card__icon {
+  border-radius: 50%;
+  width: 100px;
+  height: 100px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 
-.dashboard-card--publish {
-  background-color: #023020;
-}
 .dashboard-card--reports {
+  border-left: 4px solid #700e01;
+}
+.dashboard-card--reports > .dashboard-card__icon {
   background-color: #700e01;
 }
-.dashboard-card--analytics {
-  background-color: #d29e03;
+
+.dashboard-card--crime-records {
+  border-left: 4px solid #192346;
 }
+.dashboard-card--crime-records > .dashboard-card__icon {
+  background-color: #192346;
+}
+
+.dashboard-card--articles {
+  border-left: 4px solid #435274;
+}
+.dashboard-card--articles > .dashboard-card__icon {
+  background-color: #435274;
+}
+
 .dashboard-card--users {
   background-color: #192346;
 }
+/* .dashboard-card--analytics {
+  background-color: #d29e03;
+}
+.dashboard-card--publish {
+  background-color: #023020;
+}
 .dashboard-card--under-assesment {
   background-color: #cc5500;
-}
-.dashboard-card--articles {
-  background-color: #435274;
-}
-.dashboard-card--crime-records {
-  background-color: #5c4033;
-  background-color: #192346;
-}
+} */
 
 .dashboard-card h2 {
-  font-size: 1.2rem;
-  font-weight: 400;
+  font-size: 1.25rem;
+  font-weight: 500;
 }
 
 .dashboard-card__text {
-  text-align: center;
+  flex: 1;
+}
+.dashboard-card__number-wrapper {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+.dashboard-card__number {
+  font-weight: 600;
+  font-size: 1.5rem;
+}
+.dashboard-card__number-wrapper span {
+  font-size: 14px;
+  color: #ca6309;
+}
+.dashboard-card .line {
+  width: 100%;
+  height: 2px;
+  background-color: rgba(128, 128, 128, 0.285);
+  border-radius: 2px;
+  margin-top: 0.5rem;
+}
+
+.dashboard-card__link {
+  display: block;
+  width: fit-content;
+  margin-left: auto;
+  margin-top: 8px;
+  color: #a7a7a7;
 }
 
 .data__count {

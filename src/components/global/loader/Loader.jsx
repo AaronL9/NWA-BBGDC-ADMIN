@@ -1,4 +1,4 @@
-import './loader.css';
+import "./loader.css";
 
 export default function Loader() {
   return (
@@ -9,4 +9,8 @@ export default function Loader() {
       <div className="circle"></div>
     </div>
   );
+}
+
+export function SmallLoader() {
+  return <div className="small-loader"></div>;
 }
