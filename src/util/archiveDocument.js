@@ -6,8 +6,10 @@ import {
   setDoc,
   deleteDoc,
   getDocs,
-  where,
   query,
+  limit,
+  orderBy,
+  startAt,
 } from "firebase/firestore";
 
 // Original and archive collection paths
@@ -34,23 +36,25 @@ export async function archiveDocument(docId) {
   }
 }
 
-export async function getArchives(setArchives, searchValue) {
+export async function getArchives(page, pageSize) {
   const archivesCollectionRef = collection(db, "archives");
   const q = query(
     archivesCollectionRef,
-    where("offense", ">=", searchValue),
-    where("offense", "<=", searchValue + "\uf8ff")
+    orderBy("orderNum", "asc"),
+    startAt((page - 1) * pageSize),
+    limit(pageSize)
   );
 
   const querySnapshot = await getDocs(q);
-  const data = [];
+  const { size } = await getDocs(archivesCollectionRef);
+  const data = querySnapshot.docs.map((doc) => ({
+    id: doc.id,
+    ...doc.data(),
+  }));
 
-  querySnapshot.forEach((doc) => {
-    const obj = doc.data();
-    obj.id = doc.id;
-    data.push(obj);
-  });
-  setArchives(data);
+  console.log(Math.ceil(size / 10));
+
+  return { data, pageNum: Math.ceil(size / 10) };
 }
 
 export async function getRecord(id) {
