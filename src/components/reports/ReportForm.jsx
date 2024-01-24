@@ -9,7 +9,9 @@ export default function ReportForm({ data, onChangeHandler }) {
         <table>
           <caption>
             Status:{" "}
-            <span className={`status-${data.status}`}>{data.status}</span>
+            <span className={`status-${data.status.toLowerCase()}`}>
+              {data.status}
+            </span>
           </caption>
           <tbody>
             <tr>

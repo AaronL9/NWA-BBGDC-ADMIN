@@ -39,13 +39,13 @@ export default function Patrollers() {
     const q = query(collectionRef, orderBy("createdAt", "asc"));
 
     const unsubscribe = onSnapshot(q, (querySnapshot) => {
-      console.log("querySnapshot unsusbscribe");
       setMessages(
         querySnapshot.docs.map((doc) => {
           const data = doc.data();
           return {
             ...data,
-            position: doc.data().user._id === admin.email ? "right" : "left",
+            position: data.user._id === admin.email ? "right" : "left",
+            type: "text",
           };
         })
       );

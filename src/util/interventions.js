@@ -15,7 +15,7 @@ const CollectionPath = "reports";
 export async function moveToInterventions(docId) {
   const docRef = doc(db, CollectionPath, docId);
   try {
-    await updateDoc(docRef, { status: "pending" });
+    await updateDoc(docRef, { status: "ongoing" });
   } catch (error) {
     console.log(error);
   }

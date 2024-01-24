@@ -7,11 +7,16 @@ export default function PatrollerProfileCard({
   email,
   contactNum,
   roomId,
+  uid,
+  address,
 }) {
   const navigate = useNavigate();
   return (
     <div className="patroller-card">
-      <img className="patroller-card__profile-pic" src="/images/profile.jpeg" />
+      <img
+        className="patroller-card__profile-pic"
+        src="/images/profile-circle.png"
+      />
       <div className="patroller-card__details">
         <span className="patroller-card__name">{`${firstName} ${lastName}`}</span>
         <ul className="patroller-card__info-list">
@@ -19,15 +24,15 @@ export default function PatrollerProfileCard({
             <strong>Email:</strong> {email}
           </li>
           <li>
-            <strong>Address:</strong> 123 Main Street
+            <strong>Address:</strong> {address}
           </li>
           <li>
             <strong>Phone:</strong> {contactNum}
           </li>
         </ul>
         <div className="patroller-card__controls">
-          <button onClick={() => navigate(roomId)}>Message</button>
-          <button>Locate</button>
+          <button onClick={() => navigate(`chat/${roomId}`)}>Message</button>
+          <button onClick={() => navigate(`location/${uid}`)}>Locate</button>
         </div>
       </div>
     </div>
@@ -35,9 +40,11 @@ export default function PatrollerProfileCard({
 }
 
 PatrollerProfileCard.propTypes = {
+  uid: PropTypes.string,
   firstName: PropTypes.string,
   lastName: PropTypes.string,
   email: PropTypes.string,
   contactNum: PropTypes.string,
   roomId: PropTypes.string,
+  address: PropTypes.string,
 };

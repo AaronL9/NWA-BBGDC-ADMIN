@@ -31,26 +31,29 @@ export default function Records() {
   }, [page]);
 
   return (
-    <div className="crime-records">
-      <TableFeatures
-        setSearch={setSearchValue}
-        selectedValue={sortBy}
-        setSelectedValue={setSortBy}
-        options={crimeSort}
-      />
-      <CrimeRecordsTable archives={archives} />
-      <div className="crime-records__pagination">
-        <Stack spacing={2}>
-          <Pagination
-            count={paginationCount}
-            page={page}
-            onChange={handleChange}
-            shape="rounded"
-            siblingCount={1}
-            boundaryCount={2}
-          />
-        </Stack>
+    <>
+      <h2 className="banner__title">Records</h2>
+      <div className="crime-records">
+        <TableFeatures
+          setSearch={setSearchValue}
+          selectedValue={sortBy}
+          setSelectedValue={setSortBy}
+          options={crimeSort}
+        />
+        <CrimeRecordsTable archives={archives} />
+        <div className="crime-records__pagination">
+          <Stack spacing={2}>
+            <Pagination
+              count={paginationCount}
+              page={page}
+              onChange={handleChange}
+              shape="rounded"
+              siblingCount={1}
+              boundaryCount={2}
+            />
+          </Stack>
+        </div>
       </div>
-    </div>
+    </>
   );
 }

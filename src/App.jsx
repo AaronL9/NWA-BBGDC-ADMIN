@@ -19,10 +19,14 @@ import Authorization from "./security/Authorization";
 import Gate from "./security/Gate";
 import PublishArticle from "./pages/articles/publish/PublishArticle";
 import EditArticle from "./pages/articles/edit/EditArticle";
-import Patrollers from "./pages/patrollers/Patrollers";
+import Patrollers from "./pages/patrollers/Tabs/Patrollers.jsx";
 import PatrollerChat from "./pages/patrollers/PatrollerChat.jsx";
 import RecordView from "./pages/records/RecordView.jsx";
 import ReportView from "./pages/reports/ReportView.jsx";
+import PatrollerLocation from "./pages/patrollers/PatrollerLocation.jsx";
+import PatrollerNavigation from "./pages/patrollers/PatrollerNavigation.jsx";
+import GroupChat from "./pages/patrollers/Tabs/GroupChat.jsx";
+import AllLocation from "./pages/patrollers/Tabs/AllLocation.jsx";
 
 const router = createBrowserRouter(
   createRoutesFromElements(
@@ -44,8 +48,16 @@ const router = createBrowserRouter(
           <Route path="articles" element={<Articles />} />
           <Route path="articles/:id" element={<EditArticle />} />
           <Route path="publish-article" element={<PublishArticle />} />
-          <Route path="patrollers" element={<Patrollers />} />
-          <Route path="patrollers/:id" element={<PatrollerChat />} />
+          <Route path="patrollers" element={<PatrollerNavigation />}>
+            <Route index element={<Patrollers />} />
+            <Route path="group-chat" element={<GroupChat />} />
+            <Route path="all-location" element={<AllLocation />} />
+          </Route>
+          <Route path="patrollers/chat/:id" element={<PatrollerChat />} />
+          <Route
+            path="patrollers/location/:id"
+            element={<PatrollerLocation />}
+          />
         </Route>
       </Route>
     </>

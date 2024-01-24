@@ -35,7 +35,7 @@
 .report-card__status .circle-report {
   background-color: red;
 }
-.report-card__status .circle-pending {
+.report-card__status .circle-ongoing {
   background-color: orange;
 }
 
@@ -100,7 +100,7 @@
 .report h2 {
   text-align: center;
 }
-.report-form {
+.report-form tbody {
   /* border: 2px solid black; */
   /* width: min(1100px, 90%); */
   margin-inline: auto;
@@ -124,13 +124,12 @@
   font-weight: 500;
   margin-bottom: 4px;
   text-align: start;
-  text-transform: capitalize;
 }
 .report-form .status-report {
   color: red;
 }
-.report-form .status-resolving {
-  color: orange;
+.report-form .status-ongoing {
+  color: #f29339;
 }
 .report-form .status-resolved {
   color: green;

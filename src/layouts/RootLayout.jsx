@@ -1,14 +1,11 @@
 import { useState } from "react";
-import { Outlet, useLocation } from "react-router-dom";
-import { pageTitles } from "../util/pageTitles";
+import { Outlet } from "react-router-dom";
 
 // components
 import Sidebar from "../components/sidebar/Sidebar";
 
 export default function RootLayout() {
   const [isOpen, setIsOpen] = useState(false);
-  const path = useLocation().pathname.split("/");
-  const title = path[path.length - 1];
 
   return (
     <>
@@ -24,7 +21,6 @@ export default function RootLayout() {
             <span className="banner__text">Barangay Bonuan Gueset</span>
           </div>
         </div>
-        <h2 className="banner__title">{pageTitles[title]}</h2>
       </header>
       <Sidebar setIsOpen={setIsOpen} />
       <main className={isOpen ? "move-right" : null}>

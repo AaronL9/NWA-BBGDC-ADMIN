@@ -1,6 +1,5 @@
 .banner {
   padding: 1rem 2rem;
-  margin-bottom: 1.5rem;
   /* border: 1px solid black; */
 }
 
@@ -31,6 +30,7 @@
   margin-inline: auto;
   text-align: center;
   border-bottom: 5px solid var(--primary-color);
+  margin-bottom: 1.5rem;
 }
 
 .banner__menu-btn {

@@ -37,7 +37,7 @@ export default function Reports() {
           collectionRef,
           orderBy("status", "desc"),
           orderBy("date", "desc"),
-          where("status", "in", ["report", "pending"]),
+          where("status", "in", ["report", "ongoing"]),
           limit(pageSize)
         )
       );
@@ -144,30 +144,33 @@ export default function Reports() {
   };
 
   return (
-    <div className="reports">
-      {loading ? (
-        <div className="global-loader">
-          <Loader />
+    <>
+      <h2 className="banner__title">Reports</h2>
+      <div className="reports">
+        {loading ? (
+          <div className="global-loader">
+            <Loader />
+          </div>
+        ) : !reports.length ? (
+          <Nothing label="reports" />
+        ) : (
+          <div className="reports__cards-container">
+            <div className="reports__cards-container--overlay"></div>
+            {reports.map((report, index) => (
+              <ReportCard key={index} data={report} />
+            ))}
+          </div>
+        )}
+        <div className="reports__pagination">
+          <button disabled={pageNum === 1} onClick={loadPreviousPage}>
+            prev
+          </button>
+          <p className="reports__page-number">{pageNum}</p>
+          <button disabled={isLastPage} onClick={loadNextPage}>
+            Next
+          </button>
         </div>
-      ) : !reports.length ? (
-        <Nothing label="reports" />
-      ) : (
-        <div className="reports__cards-container">
-          <div className="reports__cards-container--overlay"></div>
-          {reports.map((report, index) => (
-            <ReportCard key={index} data={report} />
-          ))}
-        </div>
-      )}
-      <div className="reports__pagination">
-        <button disabled={pageNum === 1} onClick={loadPreviousPage}>
-          prev
-        </button>
-        <p className="reports__page-number">{pageNum}</p>
-        <button disabled={isLastPage} onClick={loadNextPage}>
-          Next
-        </button>
       </div>
-    </div>
+    </>
   );
 }

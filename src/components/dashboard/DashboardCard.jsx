@@ -29,9 +29,9 @@ export default function DashboardCard({ icon, label, path, folder }) {
           <h2>{label}</h2>
 
           <div className="dashboard-card__number-wrapper">
-            <p className="dashboard-card__number">
+            <div className="dashboard-card__number">
               {isLoading ? <SmallLoader /> : size.totalReports}
-            </p>
+            </div>
             {folder === "reports" && (
               <span>
                 &#40;{size?.totalNewReports} new, {size?.totalOnprogressReports}{" "}
