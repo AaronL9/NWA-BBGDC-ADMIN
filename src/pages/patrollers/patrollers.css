@@ -131,3 +131,21 @@
 .patroller-form input.button:hover {
   background: #121e3ad2;
 }
+
+/* ===== PATROLLERS - MESSAGE ALL */
+.patroller-message-all__button {
+  display: flex;
+  justify-content: center;
+  border: none;
+  background-color: #121e3a;
+  color: white;
+  padding: 0.35rem 1rem;
+  font-weight: 500;
+  text-transform: uppercase;
+  border-radius: 8px;
+  width: 150px;
+}
+
+.patroller-message-all__button:disabled {
+  opacity: 0.9;
+}

@@ -79,9 +79,9 @@ export default function PatrollerNavigation() {
             aria-label="nav tabs example"
             role="navigation"
           >
-            <LinkTab label="Patrollers" href="oaatrollers" />
-            <LinkTab label="Group Chat" href="patrollers/group-chat" />
-            <LinkTab label="Locations" href="patrollers/all-location" />
+            <LinkTab label="Patrollers" href="patrollers" />
+            <LinkTab label="Message All" href="patrollers/group-chat" />
+            <LinkTab label="Locate All" href="patrollers/all-location" />
           </Tabs>
         </Box>
         <Outlet />

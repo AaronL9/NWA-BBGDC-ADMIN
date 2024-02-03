@@ -14,3 +14,7 @@ export default function Loader() {
 export function SmallLoader() {
   return <div className="small-loader"></div>;
 }
+
+export function TinyLoader() {
+  return <div className="tiny-loader"></div>;
+}

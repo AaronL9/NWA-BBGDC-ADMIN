@@ -24,14 +24,17 @@ export default function PatrollerForm({ setOpenForm }) {
 
   const onSubmitHanlder = async (e) => {
     e.preventDefault();
-    const response = await fetch("/api/admin/add_patroller", {
-      method: "POST",
-      body: JSON.stringify(patrollerData),
-      headers: {
-        "Content-Type": "application/json",
-        Authorization: authCtx.admin.accessToken,
-      },
-    });
+    const response = await fetch(
+      `http://${import.meta.env.VITE_API_ENDPOINT}/api/admin/add_patroller`,
+      {
+        method: "POST",
+        body: JSON.stringify(patrollerData),
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: authCtx.admin.accessToken,
+        },
+      }
+    );
 
     const json = await response.json();
     if (response.ok) {

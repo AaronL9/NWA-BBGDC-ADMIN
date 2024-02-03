@@ -27,6 +27,13 @@ export default function Patrollers() {
     user: { _id: admin.email },
   });
 
+  function removeEmptyLines(inputString) {
+    const lines = inputString.split("\n");
+    const nonEmptyLines = lines.filter((line) => line.trim() !== "");
+    const resultString = nonEmptyLines.join("\n");
+    return resultString;
+  }
+
   const inputChatHanlder = (e) => {
     setInputMessage((value) => ({
       ...value,
@@ -54,7 +61,10 @@ export default function Patrollers() {
   }, [admin.email, roomId]);
 
   const onSend = useCallback(() => {
+    inputMessage.text = removeEmptyLines(inputMessage.text);
+
     setMessages((previousMessages) => [...previousMessages, inputMessage]);
+
     const chatDocRef = doc(collection(db, "rooms", roomId, "chats"));
     setDoc(chatDocRef, {
       ...inputMessage,
@@ -63,14 +73,13 @@ export default function Patrollers() {
     });
   }, [inputMessage, roomId]);
 
-  console.log(messages);
-
   return (
     <div className="patroller__chat">
       <MessageList
         className="message-list"
-        lockable={false}
-        toBottomHeight={"100%"}
+        lockable={true}
+        toBottomHeight={25}
+        downButton={false}
         dataSource={messages}
       />
       <Input

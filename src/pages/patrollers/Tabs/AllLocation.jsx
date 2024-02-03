@@ -32,12 +32,6 @@ export default function AllLocation() {
           {patrollersLocation.map((coords, index) => (
             <Marker key={index} position={coords} />
           ))}
-          <Marker
-            position={{ lat: 16.069587275537636, lng: 120.33473217207258 }}
-          />
-          <Marker
-            position={{ lat: 16.076608097634953, lng: 120.34106191076333 }}
-          />
         </Map>
       </APIProvider>
     </div>
