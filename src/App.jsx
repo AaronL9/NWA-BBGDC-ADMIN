@@ -50,10 +50,10 @@ const router = createBrowserRouter(
           <Route path="publish-article" element={<PublishArticle />} />
           <Route path="patrollers" element={<PatrollerNavigation />}>
             <Route index element={<Patrollers />} />
-            <Route path="group-chat" element={<GroupChat />} />
+            <Route path="send-all" element={<GroupChat />} />
             <Route path="all-location" element={<AllLocation />} />
           </Route>
-          <Route path="patrollers/chat/:id" element={<PatrollerChat />} />
+          <Route path="patrollers/chat/:name/:id" element={<PatrollerChat />} />
           <Route
             path="patrollers/location/:id"
             element={<PatrollerLocation />}

@@ -57,7 +57,7 @@ export default function PatrollerNavigation() {
           navigate("");
           break;
         case 1:
-          navigate("group-chat");
+          navigate("send-all");
           break;
         case 2:
           navigate("all-location");
@@ -80,7 +80,7 @@ export default function PatrollerNavigation() {
             role="navigation"
           >
             <LinkTab label="Patrollers" href="patrollers" />
-            <LinkTab label="Message All" href="patrollers/group-chat" />
+            <LinkTab label="Message All" href="patrollers/send-all" />
             <LinkTab label="Locate All" href="patrollers/all-location" />
           </Tabs>
         </Box>

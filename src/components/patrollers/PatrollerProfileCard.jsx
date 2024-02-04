@@ -31,7 +31,11 @@ export default function PatrollerProfileCard({
           </li>
         </ul>
         <div className="patroller-card__controls">
-          <button onClick={() => navigate(`chat/${roomId}`)}>Message</button>
+          <button
+            onClick={() => navigate(`chat/${firstName}_${lastName}/${roomId}`)}
+          >
+            Message
+          </button>
           <button onClick={() => navigate(`location/${uid}`)}>Locate</button>
         </div>
       </div>

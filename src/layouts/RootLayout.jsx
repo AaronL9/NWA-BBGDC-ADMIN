@@ -33,7 +33,7 @@ export default function RootLayout() {
             alt="ph_seal_pangasinan_dagupan.png"
           /> */}
           <div className="footer-text">
-            <p>© 2023 Neighborhood Watch.</p>
+            <p>© 2024 Neighborhood Watch.</p>
             <p>All Rights Reserved.</p>
           </div>
         </div>

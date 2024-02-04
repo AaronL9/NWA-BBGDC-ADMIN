@@ -1,4 +1,4 @@
-import { format, parseISO } from "date-fns";
+import { format, parseISO, isToday, isThisWeek, isThisYear } from "date-fns";
 import formatDistanceToNow from "date-fns/formatDistanceToNow";
 
 export function toDateTime(timestamp) {
@@ -56,4 +56,37 @@ export const formatTimestamp = (timestamp) => {
   );
 
   return formatDistanceToNow(date, { addSuffix: true });
+};
+
+export const formatTimeChat = (timestamp) => {
+  try {
+    const messageDate =
+      timestamp instanceof Date ? timestamp : timestamp.toDate();
+
+    if (isToday(messageDate)) {
+      return `Today at ${format(messageDate, "h:mm a")}`;
+    }
+
+    if (isThisWeek(messageDate)) {
+      return `${format(messageDate, "eee")} at ${format(
+        messageDate,
+        "h:mm a"
+      )}`;
+    }
+
+    if (isThisYear(messageDate)) {
+      return `${format(messageDate, "MMM d")} at ${format(
+        messageDate,
+        "h:mm a"
+      )}`;
+    }
+
+    return `${format(messageDate, "MMM d, yyyy")} at ${format(
+      messageDate,
+      "h:mm a"
+    )}`;
+  } catch (error) {
+    console.log("error", timestamp);
+    console.log(error);
+  }
 };

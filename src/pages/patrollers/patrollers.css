@@ -72,7 +72,6 @@
 }
 
 /* ===== PATROLLER FORM ===== */
-/* Import Google font - Poppins */
 .patroller-form-wrapper {
   position: fixed;
   inset: 0;
@@ -148,4 +147,13 @@
 
 .patroller-message-all__button:disabled {
   opacity: 0.9;
+}
+
+/* ===== PATROLLER CHAT SYSTEM ===== */
+.patroller__chat-footer {
+  display: none;
+}
+
+.patroller__chat-container:hover .patroller__chat-footer {
+  display: inline;
 }

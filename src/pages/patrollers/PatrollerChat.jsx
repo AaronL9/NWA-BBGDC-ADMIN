@@ -1,9 +1,19 @@
 import { useState, useCallback, useEffect } from "react";
-import { useParams } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import { useAuthContext } from "../../hooks/useAuthContext.jsx";
 import { v4 as uuidv4 } from "uuid";
-import { MessageList, Input } from "react-chat-elements";
-import "react-chat-elements/dist/main.css";
+
+// CHAT UI
+import "@chatscope/chat-ui-kit-styles/dist/default/styles.min.css";
+import {
+  MainContainer,
+  ChatContainer,
+  MessageList,
+  Message,
+  MessageInput,
+  ConversationHeader,
+  Avatar,
+} from "@chatscope/chat-ui-kit-react";
 
 // firebase
 import {
@@ -15,10 +25,14 @@ import {
   onSnapshot,
 } from "firebase/firestore";
 import { db } from "../../config/firebase";
+import { formatTimeChat } from "../../util/dateFormatter.js";
 
 export default function Patrollers() {
+  const { id: roomId, name } = useParams();
+  const navigate = useNavigate();
+  const patrollerName = name.split("_").join(" ");
+
   const { admin } = useAuthContext();
-  const { id: roomId } = useParams();
   const [messages, setMessages] = useState([]);
   const [inputMessage, setInputMessage] = useState({
     _id: "",
@@ -34,10 +48,10 @@ export default function Patrollers() {
     return resultString;
   }
 
-  const inputChatHanlder = (e) => {
+  const inputChatHanlder = (_, __, text) => {
     setInputMessage((value) => ({
       ...value,
-      text: e.target.value,
+      text: text,
     }));
   };
 
@@ -51,7 +65,7 @@ export default function Patrollers() {
           const data = doc.data();
           return {
             ...data,
-            position: data.user._id === admin.email ? "right" : "left",
+            position: data.user._id === admin.email ? "outgoing" : null,
             type: "text",
           };
         })
@@ -63,8 +77,6 @@ export default function Patrollers() {
   const onSend = useCallback(() => {
     inputMessage.text = removeEmptyLines(inputMessage.text);
 
-    setMessages((previousMessages) => [...previousMessages, inputMessage]);
-
     const chatDocRef = doc(collection(db, "rooms", roomId, "chats"));
     setDoc(chatDocRef, {
       ...inputMessage,
@@ -75,20 +87,53 @@ export default function Patrollers() {
 
   return (
     <div className="patroller__chat">
-      <MessageList
-        className="message-list"
-        lockable={true}
-        toBottomHeight={25}
-        downButton={false}
-        dataSource={messages}
-      />
-      <Input
-        className="chat__input"
-        placeholder="Type here..."
-        multiline={true}
-        rightButtons={<button onClick={onSend}>send</button>}
-        onChange={inputChatHanlder}
-      />
+      <div style={{ position: "relative", height: "500px" }}>
+        <MainContainer>
+          <ChatContainer>
+            <ConversationHeader>
+              <ConversationHeader.Back
+                onClick={() => navigate("/patrollers")}
+              />
+              <Avatar src={"/images/profile-circle.png"} name={patrollerName} />
+              <ConversationHeader.Content
+                userName={patrollerName}
+                info="Active 10 mins ago"
+              />
+            </ConversationHeader>
+            <MessageList>
+              {messages.map((message) => (
+                <Message
+                  key={message._id}
+                  className="patroller__chat-container"
+                  type="text"
+                  model={{
+                    message: message.text,
+                    direction: message.position,
+                    position: "last",
+                    sentTime: "just now",
+                  }}
+                >
+                  {!message.position && (
+                    <Message.Footer
+                      className="patroller__chat-footer"
+                      sentTime={formatTimeChat(message.createdAt)}
+                    />
+                  )}
+                  {!message.position && (
+                    <Avatar src="/images/profile-circle.png" />
+                  )}
+                </Message>
+              ))}
+            </MessageList>
+            <MessageInput
+              placeholder="Type message here"
+              attachButton={false}
+              onChange={inputChatHanlder}
+              onSend={onSend}
+            />
+          </ChatContainer>
+        </MainContainer>
+      </div>
     </div>
   );
 }
