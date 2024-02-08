@@ -1,4 +1,4 @@
-import { useState, useCallback, useEffect } from "react";
+import { useState, useCallback, useEffect, useContext } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import { useAuthContext } from "../../hooks/useAuthContext.jsx";
 import { v4 as uuidv4 } from "uuid";
@@ -26,8 +26,10 @@ import {
 } from "firebase/firestore";
 import { db } from "../../config/firebase";
 import { formatTimeChat } from "../../util/dateFormatter.js";
+import { ChatContext } from "../../context/ChatContext.jsx";
 
 export default function Patrollers() {
+  const { avatar } = useContext(ChatContext);
   const { id: roomId, name } = useParams();
   const navigate = useNavigate();
   const patrollerName = name.split("_").join(" ");
@@ -94,7 +96,11 @@ export default function Patrollers() {
               <ConversationHeader.Back
                 onClick={() => navigate("/patrollers")}
               />
-              <Avatar src={"/images/profile-circle.png"} name={patrollerName} />
+              <Avatar
+                src={avatar ? avatar : "/images/profile-circle.png"}
+                name={patrollerName}
+                style={{ objectFit: "cover" }}
+              />
               <ConversationHeader.Content
                 userName={patrollerName}
                 info="Active 10 mins ago"
@@ -120,7 +126,9 @@ export default function Patrollers() {
                     />
                   )}
                   {!message.position && (
-                    <Avatar src="/images/profile-circle.png" />
+                    <Avatar
+                      src={avatar ? avatar : "/images/profile-circle.png"}
+                    />
                   )}
                 </Message>
               ))}

@@ -12,6 +12,7 @@ import PatrollerForm from "../../../components/patrollers/PatrollerForm";
 
 export default function Patrollers() {
   const authCtx = useContext(AuthContext);
+
   const [patrollers, setPatrollers] = useState([]);
   const [openForm, setOpenForm] = useState(false);
   openForm
@@ -52,6 +53,7 @@ export default function Patrollers() {
             address={patroller.address}
             roomId={`${patroller.uid}_${authCtx.admin.uid}`}
             uid={patroller.uid}
+            avatar={patroller.avatarUrl}
           />
         ))}
       </div>

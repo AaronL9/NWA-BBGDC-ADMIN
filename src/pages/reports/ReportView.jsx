@@ -64,7 +64,7 @@ export default function ReportView() {
               className="report__archive-btn"
               onClick={handleInterventions}
             >
-              Move to interventions
+              Change status to ongoing
             </button>
           ) : (
             <button className="report__archive-btn" onClick={handleArchive}>
