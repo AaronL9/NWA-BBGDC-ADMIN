@@ -14,9 +14,7 @@ import { db } from "../../config/firebase";
 import "./reports.css";
 
 // component
-import ReportCard from "../../components/reports/ReportCard";
-import Loader from "../../components/global/loader/Loader.jsx";
-import Nothing from "./Nothing.jsx";
+import ReportTable from "./ReportTable.jsx";
 
 const collectionRef = collection(db, "reports");
 
@@ -147,28 +145,9 @@ export default function Reports() {
     <>
       <h2 className="banner__title">Reports</h2>
       <div className="reports">
-        {loading ? (
-          <div className="global-loader">
-            <Loader />
-          </div>
-        ) : !reports.length ? (
-          <Nothing label="reports" />
-        ) : (
-          <div className="reports__cards-container">
-            <div className="reports__cards-container--overlay"></div>
-            {reports.map((report, index) => (
-              <ReportCard key={index} data={report} />
-            ))}
-          </div>
-        )}
-        <div className="reports__pagination">
-          <button disabled={pageNum === 1} onClick={loadPreviousPage}>
-            prev
-          </button>
-          <p className="reports__page-number">{pageNum}</p>
-          <button disabled={isLastPage} onClick={loadNextPage}>
-            Next
-          </button>
+        <div className="reports__cards-container">
+          <div className="reports__cards-container--overlay"></div>
+          <ReportTable />
         </div>
       </div>
     </>

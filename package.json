@@ -15,6 +15,7 @@
     "@chatscope/chat-ui-kit-styles": "^1.4.0",
     "@emotion/react": "^11.11.3",
     "@emotion/styled": "^11.11.0",
+    "@mui/icons-material": "^5.15.9",
     "@mui/material": "^5.15.3",
     "@vis.gl/react-google-maps": "^0.4.1",
     "chart.js": "^4.4.1",
