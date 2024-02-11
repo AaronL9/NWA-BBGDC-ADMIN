@@ -150,8 +150,8 @@ const columns = [
   { id: "reporteeName", label: "Reportee", minWidth: 170 },
   { id: "offense", label: "Offense", minWidth: 100 },
   {
-    id: "description",
-    label: "Description",
+    id: "orderNum",
+    label: "order",
     minWidth: 170,
     align: "left",
   },
@@ -225,20 +225,25 @@ export default function ReportTable() {
     const fetchReport = async () => {
       setLoading(true);
       try {
+        const { size } = await Firestore.getDocs(collectionRef);
+        let cursor =
+          order === "desc" ? size - 1 - rowsPerPage * page : page * rowsPerPage;
+
         let query = Firestore.query(
           collectionRef,
           Firestore.orderBy("orderNum", order),
-          Firestore.where("status", "in", statusFilter)
-        );
-
-        const { size } = await Firestore.getDocs(query);
-        setTotalRows(size);
-
-        query = Firestore.query(
-          query,
-          Firestore.startAt(page * rowsPerPage),
+          Firestore.startAt(cursor),
+          Firestore.where("status", "in", statusFilter),
           Firestore.limit(rowsPerPage)
         );
+
+        const { size: totalSize } = await Firestore.getDocs(
+          Firestore.query(
+            collectionRef,
+            Firestore.where("status", "in", statusFilter)
+          )
+        );
+        setTotalRows(totalSize);
 
         const querySnapshot = await Firestore.getDocs(query);
         const docs = querySnapshot.docs;
