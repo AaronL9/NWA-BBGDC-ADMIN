@@ -10,7 +10,6 @@ import RootLayout from "./layouts/RootLayout";
 import Reports from "./pages/reports/Reports";
 import Dashboard from "./pages/dashboard/Dashboard.jsx";
 import Investigation from "./pages/investigation/Investigation";
-import Records from "./pages/records/Records";
 import Analytics from "./pages/analytics/Analytics";
 import Users from "./pages/users/Users";
 import Articles from "./pages/articles/Articles";
@@ -21,7 +20,6 @@ import PublishArticle from "./pages/articles/publish/PublishArticle";
 import EditArticle from "./pages/articles/edit/EditArticle";
 import Patrollers from "./pages/patrollers/Tabs/Patrollers.jsx";
 import PatrollerChat from "./pages/patrollers/PatrollerChat.jsx";
-import RecordView from "./pages/records/RecordView.jsx";
 import ReportView from "./pages/reports/ReportView.jsx";
 import PatrollerLocation from "./pages/patrollers/PatrollerLocation.jsx";
 import PatrollerNavigation from "./pages/patrollers/PatrollerNavigation.jsx";
@@ -41,8 +39,6 @@ const router = createBrowserRouter(
           <Route path="reports/:id" element={<ReportView />} />
           <Route path="action" element={<Investigation />} />
           <Route path="action/:id" element={<ReportView />} />
-          <Route path="records" element={<Records />} />
-          <Route path="records/:id" element={<RecordView />} />
           <Route path="analytics" element={<Analytics />} />
           <Route path="users" element={<Users />} />
           <Route path="articles" element={<Articles />} />

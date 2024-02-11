@@ -3,6 +3,9 @@
 }
 
 /* ===== MUI TABLE ===== */
+.MUI-table-cell-capitalize {
+  text-transform: capitalize;
+}
 .MUI-table-cell-status {
   text-transform: capitalize;
   position: relative;

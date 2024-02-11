@@ -1,5 +1,13 @@
 import * as React from "react";
-import * as Firestore from "firebase/firestore";
+import {
+  where,
+  query,
+  getDocs,
+  collection,
+  orderBy,
+  limit,
+  startAt,
+} from "firebase/firestore";
 import { db } from "../../config/firebase";
 import Paper from "@mui/material/Paper";
 import Table from "@mui/material/Table";
@@ -43,10 +51,12 @@ const SearchIconWrapper = styled("div")(({ theme }) => ({
   padding: theme.spacing(0, 2),
   height: "100%",
   position: "absolute",
-  pointerEvents: "none",
   display: "flex",
   alignItems: "center",
   justifyContent: "center",
+  pointerEvents: "auto",
+  zIndex: 100,
+  cursor: "pointer",
 }));
 
 const StyledInputBase = styled(InputBase)(({ theme }) => ({
@@ -72,6 +82,7 @@ function EnhancedTableToolbar({
   anchorEl,
   handleFilterClose,
   handleFilterSelect,
+  onChangeHandler,
 }) {
   return (
     <Toolbar
@@ -82,13 +93,14 @@ function EnhancedTableToolbar({
         justifyContent: "space-between",
       }}
     >
-      <Search>
+      <Search onClick={(e) => console.log(e.target.tagName)}>
         <SearchIconWrapper>
           <SearchIcon />
         </SearchIconWrapper>
         <StyledInputBase
           placeholder="Search…"
           inputProps={{ "aria-label": "search" }}
+          onChange={(e) => onChangeHandler(e.target.value)}
         />
       </Search>
       <div style={{ display: "flex", alignItems: "center" }}>
@@ -144,17 +156,28 @@ EnhancedTableToolbar.propTypes = {
   anchorEl: PropTypes.oneOfType([PropTypes.object, PropTypes.func]),
   handleFilterClose: PropTypes.func.isRequired,
   handleFilterSelect: PropTypes.func.isRequired,
+  onChangeHandler: PropTypes.func,
 };
 
 const columns = [
-  { id: "reporteeName", label: "Reportee", minWidth: 170 },
-  { id: "offense", label: "Offense", minWidth: 100 },
   {
-    id: "orderNum",
-    label: "order",
+    id: "reporteeName",
+    label: "Reportee",
     minWidth: 170,
-    align: "left",
+    styleClass: "MUI-table-cell-capitalize",
   },
+  {
+    id: "offense",
+    label: "Offense",
+    minWidth: 100,
+    styleClass: "MUI-table-cell-capitalize",
+  },
+  // {
+  //   id: "orderNum",
+  //   label: "order",
+  //   minWidth: 170,
+  //   align: "left",
+  // },
   {
     id: "location",
     label: "Location",
@@ -178,20 +201,25 @@ const columns = [
 ];
 
 const status = ["report", "ongoing", "resolved"];
-const collectionRef = Firestore.collection(db, "reports");
+const collectionRef = collection(db, "reports");
 
 export default function ReportTable() {
   const navigate = useNavigate();
 
+  const [loading, setLoading] = React.useState(true);
   const [totalRows, setTotalRows] = React.useState(0);
   const [rows, setRows] = React.useState([]);
   const [page, setPage] = React.useState(0);
-  const [rowsPerPage, setRowsPerPage] = React.useState(2);
-  const [orderBy, setOrderBy] = React.useState("date");
+  const [rowsPerPage, setRowsPerPage] = React.useState(10);
+  const [sortBy, setSortBy] = React.useState("date");
   const [order, setOrder] = React.useState("desc");
   const [statusFilter, setStatusFilter] = React.useState(status);
   const [anchorEl, setAnchorEl] = React.useState(null);
-  const [loading, setLoading] = React.useState(null);
+  const [searchValue, setSearchValue] = React.useState(null);
+
+  const onChangeHandler = (value) => {
+    setSearchValue(value.toLowerCase());
+  };
 
   const handleChangePage = async (event, newPage) => {
     setPage(newPage);
@@ -205,7 +233,7 @@ export default function ReportTable() {
   const handleRequestSort = (property) => {
     const isAsc = orderBy === property && order === "asc";
     setOrder(isAsc ? "desc" : "asc");
-    setOrderBy(property);
+    setSortBy(property);
   };
 
   const handleFilterClick = (event) => {
@@ -219,33 +247,42 @@ export default function ReportTable() {
   const handleFilterSelect = (status) => {
     setStatusFilter(status);
     setAnchorEl(null);
+    setPage(0);
   };
 
   React.useEffect(() => {
     const fetchReport = async () => {
-      setLoading(true);
       try {
-        const { size } = await Firestore.getDocs(collectionRef);
-        let cursor =
+        setLoading(true);
+        const { size } = await getDocs(collectionRef);
+
+        const cursor =
           order === "desc" ? size - 1 - rowsPerPage * page : page * rowsPerPage;
 
-        let query = Firestore.query(
+        let q = query(
           collectionRef,
-          Firestore.orderBy("orderNum", order),
-          Firestore.startAt(cursor),
-          Firestore.where("status", "in", statusFilter),
-          Firestore.limit(rowsPerPage)
+          orderBy("orderNum", order),
+          startAt(cursor),
+          where("status", "in", statusFilter),
+          limit(rowsPerPage)
         );
 
-        const { size: totalSize } = await Firestore.getDocs(
-          Firestore.query(
+        if (searchValue)
+          q = query(
             collectionRef,
-            Firestore.where("status", "in", statusFilter)
-          )
+            orderBy("reporteeName"),
+            where("status", "in", statusFilter),
+            where("reporteeName", ">=", searchValue),
+            where("reporteeName", "<=", searchValue + "'\uf8ff'"),
+            limit(rowsPerPage)
+          );
+
+        const { size: totalSize } = await getDocs(
+          query(collectionRef, where("status", "in", statusFilter))
         );
         setTotalRows(totalSize);
 
-        const querySnapshot = await Firestore.getDocs(query);
+        const querySnapshot = await getDocs(q);
         const docs = querySnapshot.docs;
 
         const data = docs.map((doc) => ({
@@ -257,11 +294,11 @@ export default function ReportTable() {
       } catch (error) {
         console.log(error);
       }
+      setLoading(false);
     };
 
     fetchReport();
-    setLoading(false);
-  }, [orderBy, order, statusFilter, rowsPerPage, page]);
+  }, [sortBy, order, statusFilter, rowsPerPage, page, searchValue]);
 
   return (
     <Paper sx={{ width: "100%", overflow: "hidden" }}>
@@ -271,9 +308,18 @@ export default function ReportTable() {
         anchorEl={anchorEl} // Pass the anchorEl prop
         handleFilterClose={handleFilterClose} // Pass the handleFilterClose prop
         handleFilterSelect={handleFilterSelect} // Pass the handleFilterSelect prop
+        onChangeHandler={onChangeHandler}
       />
       {loading ? (
-        <SmallLoader></SmallLoader>
+        <div
+          style={{
+            display: "flex",
+            justifyContent: "center",
+            paddingBlock: "10px",
+          }}
+        >
+          <SmallLoader />
+        </div>
       ) : (
         <>
           <TableContainer sx={{ maxHeight: 440 }}>
@@ -339,7 +385,7 @@ export default function ReportTable() {
             </Table>
           </TableContainer>
           <TablePagination
-            rowsPerPageOptions={[2, 4, 6, 7]}
+            rowsPerPageOptions={[10, 15, 20]}
             component="div"
             count={totalRows}
             rowsPerPage={rowsPerPage}

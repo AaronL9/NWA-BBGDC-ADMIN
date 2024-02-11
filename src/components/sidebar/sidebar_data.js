@@ -15,11 +15,6 @@ export const navListData = [
     path: "reports",
   },
   {
-    iconClass: "bx-folder-open",
-    name: "Records",
-    path: "records",
-  },
-  {
     iconClass: "bx-pie-chart-alt-2",
     name: "Analytics",
     path: "analytics",
