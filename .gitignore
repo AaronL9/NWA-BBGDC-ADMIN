@@ -24,3 +24,15 @@ dist-ssr
 *.sln
 *.sw?
 .env
+
+# Firebase
+functions
+/functions/node_modules
+/functions/.runtimeconfig.json
+.firebaserc
+firebase.json
+firestore.rules
+firestore.indexes.json
+
+# dev folder
+callableFunctions

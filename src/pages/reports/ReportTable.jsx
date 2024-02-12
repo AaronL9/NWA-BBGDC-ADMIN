@@ -1,14 +1,4 @@
 import * as React from "react";
-import {
-  where,
-  query,
-  getDocs,
-  collection,
-  orderBy,
-  limit,
-  startAt,
-} from "firebase/firestore";
-import { db } from "../../config/firebase";
 import Paper from "@mui/material/Paper";
 import Table from "@mui/material/Table";
 import TableBody from "@mui/material/TableBody";
@@ -34,6 +24,13 @@ import { styled } from "@mui/material/styles";
 import InputBase from "@mui/material/InputBase";
 import PropTypes from "prop-types";
 import { SmallLoader } from "../../components/global/loader/Loader.jsx";
+import algoliasearch from "algoliasearch/lite.js";
+
+const searchClient = algoliasearch(
+  import.meta.env.VITE_ALGOLIA_APP_ID,
+  import.meta.env.VITE_ALGOLIA_SEARCH_KEY
+);
+const index = searchClient.initIndex(import.meta.env.VITE_ALGOLIA_INDEX_NAME);
 
 const Search = styled("div")(({ theme }) => ({
   position: "relative",
@@ -200,9 +197,6 @@ const columns = [
   },
 ];
 
-const status = ["report", "ongoing", "resolved"];
-const collectionRef = collection(db, "reports");
-
 export default function ReportTable() {
   const navigate = useNavigate();
 
@@ -251,54 +245,15 @@ export default function ReportTable() {
   };
 
   React.useEffect(() => {
-    const fetchReport = async () => {
-      try {
-        setLoading(true);
-        const { size } = await getDocs(collectionRef);
-
-        const cursor =
-          order === "desc" ? size - 1 - rowsPerPage * page : page * rowsPerPage;
-
-        let q = query(
-          collectionRef,
-          orderBy("orderNum", order),
-          startAt(cursor),
-          where("status", "in", statusFilter),
-          limit(rowsPerPage)
-        );
-
-        if (searchValue)
-          q = query(
-            collectionRef,
-            orderBy("reporteeName"),
-            where("status", "in", statusFilter),
-            where("reporteeName", ">=", searchValue),
-            where("reporteeName", "<=", searchValue + "'\uf8ff'"),
-            limit(rowsPerPage)
-          );
-
-        const { size: totalSize } = await getDocs(
-          query(collectionRef, where("status", "in", statusFilter))
-        );
-        setTotalRows(totalSize);
-
-        const querySnapshot = await getDocs(q);
-        const docs = querySnapshot.docs;
-
-        const data = docs.map((doc) => ({
-          id: doc.id,
-          ...doc.data(),
-        }));
-
-        setRows(data);
-      } catch (error) {
-        console.log(error);
-      }
-      setLoading(false);
-    };
-
-    fetchReport();
-  }, [sortBy, order, statusFilter, rowsPerPage, page, searchValue]);
+    index
+      .search(searchValue, { hitsPerPage: 5 })
+      .then(({ hits }) => {
+        setRows(hits);
+      })
+      .catch((error) => {
+        console.error("Error performing search:", error);
+      });
+  }, [searchValue]);
 
   return (
     <Paper sx={{ width: "100%", overflow: "hidden" }}>
@@ -366,7 +321,7 @@ export default function ReportTable() {
                                 className={`MUI-table-cell-status-circle status-${value}`}
                               ></div>
                             )}
-                            {column.format ? column.format(value) : value}
+                            {value}
                           </TableCell>
                         );
                       })}
