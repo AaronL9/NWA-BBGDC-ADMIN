@@ -7,158 +7,33 @@ import TableContainer from "@mui/material/TableContainer";
 import TableHead from "@mui/material/TableHead";
 import TablePagination from "@mui/material/TablePagination";
 import TableRow from "@mui/material/TableRow";
-import {
-  IconButton,
-  TableSortLabel,
-  Toolbar,
-  Tooltip,
-  Menu,
-  MenuItem,
-  Typography,
-} from "@mui/material";
+import { TableSortLabel, Toolbar, Typography } from "@mui/material";
 import { formatDateReport } from "../../util/dateFormatter";
 import { useNavigate } from "react-router-dom";
-import FilterListIcon from "@mui/icons-material/FilterList";
 import SearchIcon from "@mui/icons-material/Search";
 import { styled } from "@mui/material/styles";
 import InputBase from "@mui/material/InputBase";
 import PropTypes from "prop-types";
-import { SmallLoader } from "../../components/global/loader/Loader.jsx";
-import algoliasearch from "algoliasearch/lite.js";
+import algoliasearch from "algoliasearch";
+import Spinner from "../../components/global/spinner/Spinner.jsx";
+import FilterMenu from "../../components/reports/FilterMenu.jsx";
+import { statusOptions, yearOptions } from "../../util/tableFilterLogic.js";
 
 const searchClient = algoliasearch(
   import.meta.env.VITE_ALGOLIA_APP_ID,
   import.meta.env.VITE_ALGOLIA_SEARCH_KEY
 );
-const index = searchClient.initIndex(import.meta.env.VITE_ALGOLIA_INDEX_NAME);
-
-const Search = styled("div")(({ theme }) => ({
-  position: "relative",
-  borderRadius: theme.shape.borderRadius,
-  backgroundColor: "#f5f5f5",
-  marginLeft: 0,
-  width: "100%",
-  [theme.breakpoints.up("sm")]: {
-    marginLeft: theme.spacing(1),
-    width: "auto",
-  },
-}));
-
-const SearchIconWrapper = styled("div")(({ theme }) => ({
-  padding: theme.spacing(0, 2),
-  height: "100%",
-  position: "absolute",
-  display: "flex",
-  alignItems: "center",
-  justifyContent: "center",
-  pointerEvents: "auto",
-  zIndex: 100,
-  cursor: "pointer",
-}));
-
-const StyledInputBase = styled(InputBase)(({ theme }) => ({
-  color: "inherit",
-  width: "100%",
-  "& .MuiInputBase-input": {
-    padding: theme.spacing(1, 1, 1, 0),
-    // vertical padding + font size from searchIcon
-    paddingLeft: `calc(1em + ${theme.spacing(4)})`,
-    transition: theme.transitions.create("width"),
-    [theme.breakpoints.up("sm")]: {
-      width: "12ch",
-      "&:focus": {
-        width: "20ch",
-      },
-    },
-  },
-}));
-
-function EnhancedTableToolbar({
-  onFilterClick,
-  statusFilter,
-  anchorEl,
-  handleFilterClose,
-  handleFilterSelect,
-  onChangeHandler,
-}) {
-  return (
-    <Toolbar
-      sx={{
-        pl: { sm: 2 },
-        pr: { xs: 1, sm: 1 },
-        backgroundColor: "white",
-        justifyContent: "space-between",
-      }}
-    >
-      <Search onClick={(e) => console.log(e.target.tagName)}>
-        <SearchIconWrapper>
-          <SearchIcon />
-        </SearchIconWrapper>
-        <StyledInputBase
-          placeholder="Search…"
-          inputProps={{ "aria-label": "search" }}
-          onChange={(e) => onChangeHandler(e.target.value)}
-        />
-      </Search>
-      <div style={{ display: "flex", alignItems: "center" }}>
-        <Typography variant="subtitle1" sx={{ marginRight: 2 }}>
-          <span style={{ fontWeight: "bold" }}>Filter Status:</span>{" "}
-          {statusFilter.length === 3 ? "none" : statusFilter[0]}
-        </Typography>
-
-        <Tooltip title="Status">
-          <IconButton onClick={onFilterClick}>
-            <FilterListIcon />
-          </IconButton>
-        </Tooltip>
-
-        <Menu
-          anchorEl={anchorEl}
-          open={Boolean(anchorEl)}
-          onClose={handleFilterClose}
-        >
-          <MenuItem
-            onClick={() => handleFilterSelect(status)}
-            selected={statusFilter === "none"}
-          >
-            None
-          </MenuItem>
-          <MenuItem
-            onClick={() => handleFilterSelect(["report"])}
-            selected={statusFilter === "report"}
-          >
-            Report
-          </MenuItem>
-          <MenuItem
-            onClick={() => handleFilterSelect(["ongoing"])}
-            selected={statusFilter === "ongoing"}
-          >
-            Ongoing
-          </MenuItem>
-          <MenuItem
-            onClick={() => handleFilterSelect(["resolved"])}
-            selected={statusFilter === "resolved"}
-          >
-            Resolved
-          </MenuItem>
-        </Menu>
-      </div>
-    </Toolbar>
-  );
-}
-
-EnhancedTableToolbar.propTypes = {
-  onFilterClick: PropTypes.func.isRequired,
-  statusFilter: PropTypes.array,
-  anchorEl: PropTypes.oneOfType([PropTypes.object, PropTypes.func]),
-  handleFilterClose: PropTypes.func.isRequired,
-  handleFilterSelect: PropTypes.func.isRequired,
-  onChangeHandler: PropTypes.func,
-};
+const mainIndex = searchClient.initIndex(
+  import.meta.env.VITE_ALGOLIA_INDEX_NAME
+);
+const replicaIndex = searchClient.initIndex(
+  import.meta.env.VITE_ALGOLIA_INDEX_REPLICA_NAME
+);
+const defaultFilter = "status:report OR status:ongoing OR status:resolved";
 
 const columns = [
   {
-    id: "reporteeName",
+    id: "reportee",
     label: "Reportee",
     minWidth: 170,
     styleClass: "MUI-table-cell-capitalize",
@@ -197,6 +72,119 @@ const columns = [
   },
 ];
 
+const Search = styled("div")(({ theme }) => ({
+  position: "relative",
+  borderRadius: theme.shape.borderRadius,
+  backgroundColor: "#f5f5f5",
+  marginLeft: 0,
+  width: "100%",
+  [theme.breakpoints.up("sm")]: {
+    marginLeft: theme.spacing(1),
+    width: "auto",
+  },
+}));
+
+const SearchIconWrapper = styled("div")(() => ({
+  marginLeft: "0.5rem",
+  height: "100%",
+  position: "absolute",
+  display: "flex",
+  alignItems: "center",
+  justifyContent: "center",
+  pointerEvents: "auto",
+  zIndex: 100,
+  cursor: "pointer",
+}));
+
+const StyledInputBase = styled(InputBase)(({ theme }) => ({
+  color: "inherit",
+  width: "100%",
+  "& .MuiInputBase-input": {
+    padding: theme.spacing(1, 1, 1, 0),
+    // vertical padding + font size from searchIcon
+    paddingLeft: `calc(1em + ${theme.spacing(4)})`,
+    transition: theme.transitions.create("width"),
+    [theme.breakpoints.up("sm")]: {
+      width: "12ch",
+      "&:focus": {
+        width: "20ch",
+      },
+    },
+  },
+}));
+
+EnhancedTableToolbar.propTypes = {
+  anchorEl: PropTypes.oneOfType([PropTypes.object, PropTypes.func]),
+  setSearchValue: PropTypes.func,
+  searchValue: PropTypes.string,
+  status: PropTypes.string,
+  year: PropTypes.string,
+  setQuery: PropTypes.func,
+  setStatus: PropTypes.func,
+  setYear: PropTypes.func,
+};
+
+function EnhancedTableToolbar({
+  setSearchValue,
+  searchValue,
+  setQuery,
+  setStatus,
+  setYear,
+  year,
+  status,
+}) {
+  return (
+    <Toolbar
+      sx={{
+        pl: { sm: 2 },
+        pr: { xs: 1, sm: 1 },
+        backgroundColor: "white",
+        justifyContent: "space-between",
+      }}
+    >
+      <Search>
+        <SearchIconWrapper onClick={() => setQuery(searchValue)}>
+          <SearchIcon />
+        </SearchIconWrapper>
+        <StyledInputBase
+          placeholder="Search…"
+          inputProps={{ "aria-label": "search" }}
+          onChange={(e) => setSearchValue(e.target.value)}
+          onKeyDown={(e) => {
+            if (e.key === "Enter") {
+              setQuery(searchValue);
+            }
+          }}
+        />
+      </Search>
+      <div
+        style={{
+          display: "flex",
+          alignItems: "center",
+          gap: "8px",
+          paddingBlock: "8px",
+        }}
+      >
+        <Typography variant="subtitle1">
+          <span style={{ fontWeight: "bold" }}>Filter By:</span>
+        </Typography>
+        <FilterMenu
+          values={yearOptions}
+          setFilterValue={setYear}
+          filterValue={year}
+          label="Year"
+        />
+        <FilterMenu
+          values={statusOptions}
+          setFilterValue={setStatus}
+          filterValue={status}
+          label="Status"
+        />
+      </div>
+    </Toolbar>
+  );
+}
+
 export default function ReportTable() {
   const navigate = useNavigate();
 
@@ -205,15 +193,16 @@ export default function ReportTable() {
   const [rows, setRows] = React.useState([]);
   const [page, setPage] = React.useState(0);
   const [rowsPerPage, setRowsPerPage] = React.useState(10);
+
   const [sortBy, setSortBy] = React.useState("date");
   const [order, setOrder] = React.useState("desc");
-  const [statusFilter, setStatusFilter] = React.useState(status);
-  const [anchorEl, setAnchorEl] = React.useState(null);
-  const [searchValue, setSearchValue] = React.useState(null);
 
-  const onChangeHandler = (value) => {
-    setSearchValue(value.toLowerCase());
-  };
+  const [status, setStatus] = React.useState(defaultFilter);
+  const [year, setYear] = React.useState("");
+  const [searchValue, setSearchValue] = React.useState("");
+  const [query, setQuery] = React.useState("");
+
+  console.log(year);
 
   const handleChangePage = async (event, newPage) => {
     setPage(newPage);
@@ -225,131 +214,130 @@ export default function ReportTable() {
   };
 
   const handleRequestSort = (property) => {
-    const isAsc = orderBy === property && order === "asc";
-    setOrder(isAsc ? "desc" : "asc");
+    setLoading(true);
+    const isAsc = sortBy === property && order === "asc";
+    const orderValue = isAsc ? "desc" : "asc";
+    setOrder(orderValue);
     setSortBy(property);
   };
 
-  const handleFilterClick = (event) => {
-    setAnchorEl(event.currentTarget);
-  };
-
-  const handleFilterClose = () => {
-    setAnchorEl(null);
-  };
-
-  const handleFilterSelect = (status) => {
-    setStatusFilter(status);
-    setAnchorEl(null);
-    setPage(0);
-  };
-
   React.useEffect(() => {
-    index
-      .search(searchValue, { hitsPerPage: 5 })
-      .then(({ hits }) => {
+    const performSearch = async () => {
+      try {
+        setLoading(true);
+        const index = order === "desc" ? mainIndex : replicaIndex;
+
+        const { hits, nbHits } = await index.search(query, {
+          hitsPerPage: rowsPerPage,
+          page: page,
+          filters: status,
+          numericFilters: year,
+        });
+
         setRows(hits);
-      })
-      .catch((error) => {
+        setTotalRows(nbHits);
+      } catch (error) {
         console.error("Error performing search:", error);
-      });
-  }, [searchValue]);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    performSearch();
+  }, [query, rowsPerPage, page, totalRows, order, status, year]);
 
   return (
-    <Paper sx={{ width: "100%", overflow: "hidden" }}>
-      <EnhancedTableToolbar
-        onFilterClick={handleFilterClick}
-        statusFilter={statusFilter}
-        anchorEl={anchorEl} // Pass the anchorEl prop
-        handleFilterClose={handleFilterClose} // Pass the handleFilterClose prop
-        handleFilterSelect={handleFilterSelect} // Pass the handleFilterSelect prop
-        onChangeHandler={onChangeHandler}
-      />
-      {loading ? (
-        <div
-          style={{
-            display: "flex",
-            justifyContent: "center",
-            paddingBlock: "10px",
-          }}
-        >
-          <SmallLoader />
+    <>
+      {loading && (
+        <div className="loader-overlay">
+          <Spinner />
         </div>
-      ) : (
-        <>
-          <TableContainer sx={{ maxHeight: 440 }}>
-            <Table stickyHeader aria-label="sticky table">
-              <TableHead>
-                <TableRow>
-                  {columns.map((column) => (
-                    <TableCell
-                      key={column.id}
-                      align={column.align}
-                      style={{ minWidth: column.minWidth, fontWeight: "bold" }}
-                    >
-                      {column.id !== "date" ? (
-                        column.label
-                      ) : (
-                        <TableSortLabel
-                          active={orderBy === column.id}
-                          direction={orderBy === column.id ? order : "asc"}
-                          onClick={() => handleRequestSort(column.id)}
-                        >
-                          {column.label}
-                        </TableSortLabel>
-                      )}
-                    </TableCell>
-                  ))}
-                  <TableCell style={{ fontWeight: "bold" }}>Action</TableCell>
-                </TableRow>
-              </TableHead>
-              <TableBody>
-                {rows.map((row) => {
-                  return (
-                    <TableRow hover role="checkbox" tabIndex={-1} key={row.id}>
-                      {columns.map((column) => {
-                        const value = row[column.id];
-                        const customStyle = column.styleClass ?? null;
-                        return (
-                          <TableCell
-                            key={column.id}
-                            align={column.align}
-                            className={customStyle}
-                          >
-                            {column.id === "status" && (
-                              <div
-                                className={`MUI-table-cell-status-circle status-${value}`}
-                              ></div>
-                            )}
-                            {value}
-                          </TableCell>
-                        );
-                      })}
-                      <TableCell>
-                        <button
-                          className="MUI-table-cell-button"
-                          onClick={() => navigate(row.id)}
-                        >
-                          View
-                        </button>
-                      </TableCell>
-                    </TableRow>
-                  );
-                })}
-              </TableBody>
-            </Table>
-          </TableContainer>
-          <TablePagination
-            rowsPerPageOptions={[10, 15, 20]}
-            component="div"
-            count={totalRows}
-            rowsPerPage={rowsPerPage}
-            page={page}
-            onPageChange={handleChangePage}
-            onRowsPerPageChange={handleChangeRowsPerPage}
-          />
-        </>
       )}
-    </Paper>
+      <Paper sx={{ width: "100%", overflow: "hidden" }}>
+        <EnhancedTableToolbar
+          setSearchValue={setSearchValue}
+          searchValue={searchValue}
+          setQuery={setQuery}
+          setStatus={setStatus}
+          setYear={setYear}
+        />
+        <TableContainer sx={{ maxHeight: 440 }}>
+          <Table stickyHeader aria-label="sticky table">
+            <TableHead>
+              <TableRow>
+                {columns.map((column) => (
+                  <TableCell
+                    key={column.id}
+                    align={column.align}
+                    style={{ minWidth: column.minWidth, fontWeight: "bold" }}
+                  >
+                    {column.id !== "date" ? (
+                      column.label
+                    ) : (
+                      <TableSortLabel
+                        active={sortBy === column.id}
+                        direction={sortBy === column.id ? order : "asc"}
+                        onClick={() => handleRequestSort(column.id)}
+                      >
+                        {column.label}
+                      </TableSortLabel>
+                    )}
+                  </TableCell>
+                ))}
+                <TableCell style={{ fontWeight: "bold" }}>Action</TableCell>
+              </TableRow>
+            </TableHead>
+            <TableBody>
+              {rows.map((row) => {
+                return (
+                  <TableRow
+                    hover
+                    role="checkbox"
+                    tabIndex={-1}
+                    key={row.objectID}
+                  >
+                    {columns.map((column, index) => {
+                      const value = row[column.id];
+                      const customStyle = column.styleClass ?? null;
+                      return (
+                        <TableCell
+                          key={index}
+                          align={column.align}
+                          className={customStyle}
+                        >
+                          {column.id === "status" && (
+                            <div
+                              className={`MUI-table-cell-status-circle status-${value}`}
+                            ></div>
+                          )}
+                          {value}
+                        </TableCell>
+                      );
+                    })}
+                    <TableCell>
+                      <button
+                        className="MUI-table-cell-button"
+                        onClick={() => navigate(row.objectID)}
+                      >
+                        View
+                      </button>
+                    </TableCell>
+                  </TableRow>
+                );
+              })}
+            </TableBody>
+          </Table>
+        </TableContainer>
+        <TablePagination
+          rowsPerPageOptions={[10, 15, 20]}
+          component="div"
+          count={totalRows}
+          rowsPerPage={rowsPerPage}
+          page={page}
+          onPageChange={handleChangePage}
+          onRowsPerPageChange={handleChangeRowsPerPage}
+        />
+      </Paper>
+    </>
   );
 }

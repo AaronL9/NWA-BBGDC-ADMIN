@@ -2,9 +2,11 @@ import PropTypes from "prop-types";
 import CloseButton from "../global/close-button/CloseButton";
 import { useContext, useState } from "react";
 import { AuthContext } from "../../context/AuthContext";
+import Spinner from "../global/spinner/Spinner";
 
 export default function PatrollerForm({ setOpenForm }) {
   const authCtx = useContext(AuthContext);
+  const [loading, setLoading] = useState(false);
   const [patrollerData, setPatrollerData] = useState({
     firstName: "",
     lastName: "",
@@ -24,28 +26,40 @@ export default function PatrollerForm({ setOpenForm }) {
 
   const onSubmitHanlder = async (e) => {
     e.preventDefault();
-    const response = await fetch(
-      `http://${import.meta.env.VITE_API_ENDPOINT}/api/admin/add_patroller`,
-      {
-        method: "POST",
-        body: JSON.stringify(patrollerData),
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: authCtx.admin.accessToken,
-        },
-      }
-    );
+    try {
+      setLoading(true);
+      const response = await fetch(
+        `http://${import.meta.env.VITE_API_ENDPOINT}/api/admin/add_patroller`,
+        {
+          method: "POST",
+          body: JSON.stringify(patrollerData),
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: authCtx.admin.accessToken,
+          },
+        }
+      );
 
-    const json = await response.json();
-    if (response.ok) {
-      console.log(json.error);
+      const json = await response.json();
+      if (!response.ok) {
+        alert(json.error);
+        return;
+      }
+
       setOpenForm(false);
-    } else {
-      console.log(json);
+      setLoading(false);
+    } catch (error) {
+      setLoading(false);
+      console.log(error.message);
+      alert("Failed to add patroller");
     }
   };
 
-  return (
+  return loading ? (
+    <div className="loader-overlay">
+      <Spinner />
+    </div>
+  ) : (
     <div className="patroller-form-wrapper">
       <div className="patroller-form-container">
         <CloseButton setOpenForm={setOpenForm} />

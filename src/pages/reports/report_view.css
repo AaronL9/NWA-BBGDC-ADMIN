@@ -7,6 +7,29 @@
   margin-bottom: 1rem;
 }
 
+.report-form__captions {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+}
+.report-form__captions span {
+  font-weight: bold;
+  text-transform: uppercase;
+  letter-spacing: -0.5px;
+}
+.MUI-change-status-button-container {
+  width: fit-content;
+}
+.MUI-change-status-button-container .status-report {
+  background-color: red;
+}
+.MUI-change-status-button-container .status-ongoing {
+  background-color: orange;
+}
+.MUI-change-status-button-container .status-resolved {
+  background-color: green;
+}
+
 .report__title {
   margin-bottom: 2rem;
   text-align: center;

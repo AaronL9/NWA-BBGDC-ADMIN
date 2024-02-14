@@ -53,23 +53,29 @@
   background-color: #700e01;
 }
 
-.dashboard-card--crime-records {
+.dashboard-card--users {
   border-left: 4px solid #192346;
 }
-.dashboard-card--crime-records > .dashboard-card__icon {
+.dashboard-card--users > .dashboard-card__icon {
   background-color: #192346;
 }
 
-.dashboard-card--articles {
-  border-left: 4px solid #435274;
+.dashboard-card--patrollers {
+  border-left: 4px solid #000;
 }
-.dashboard-card--articles > .dashboard-card__icon {
-  background-color: #435274;
+.dashboard-card--patrollers > .dashboard-card__icon {
+  background-color: #161616;
+  width: 100px;
+}
+.dashboard-card--patrollers > .dashboard-card__icon img {
+  border: 5px solid #e1ad37;
+  border-radius: 50%;
+  padding: 10px;
 }
 
-.dashboard-card--users {
+/* .dashboard-card--users {
   background-color: #192346;
-}
+} */
 /* .dashboard-card--analytics {
   background-color: #d29e03;
 }

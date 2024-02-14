@@ -15,8 +15,10 @@ export function toDateTime(timestamp) {
   return formattedDate;
 }
 
-export function formatDateString(inputDate) {
-  const date = new Date(inputDate);
+export function formatDateString(timestamp) {
+  const date = new Date(
+    timestamp.seconds * 1000 + timestamp.nanoseconds / 1000000
+  );
 
   return format(date, "MMM d yyyy hh:mm a");
 }

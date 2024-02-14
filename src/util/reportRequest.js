@@ -8,7 +8,7 @@ export const getNumberOfReports = async (path) => {
     const filterReport = query(collectionRef, where("status", "==", "report"));
     const filterPending = query(
       collectionRef,
-      where("status", "==", "pending")
+      where("status", "==", "ongoing")
     );
 
     const { size: totalReports } = await getDocs(collectionRef);

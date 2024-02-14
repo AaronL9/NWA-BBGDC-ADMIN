@@ -3,23 +3,6 @@ import DashboardCard from "../../components/dashboard/DashboardCard";
 import { AdminDashboardData } from "./dashboard_data";
 
 export default function AdminDashboard() {
-  const options = {
-    enableHighAccuracy: false,
-    timeout: 5000,
-    maximumAge: 0,
-  };
-
-  navigator.geolocation.watchPosition(successCallback, errorCallback, options);
-
-  function successCallback(position) {
-    const { latitude, longitude } = position.coords;
-    console.log(latitude, longitude);
-  }
-
-  function errorCallback(error) {
-    console.log(error);
-  }
-
   return (
     <>
       <h2 className="banner__title">Dashboard</h2>

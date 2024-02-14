@@ -9,16 +9,15 @@ export const AdminDashboardData = [
   {
     id: 3,
     path: "/records",
-    label: "Crime Records",
-    icon: "/svg/admin_dashboard/crime_board.svg",
-    collectionRef: "archives",
+    label: "Users",
+    icon: "/svg/admin_dashboard/users.svg",
+    collectionRef: "users",
   },
-
   {
     id: 6,
-    path: "/articles",
-    label: "Articles",
-    icon: "/svg/admin_dashboard/articles_list.svg",
-    collectionRef: "articles",
+    path: "/patrollers",
+    label: "Patrollers",
+    icon: "/svg/admin_dashboard/tanod.svg",
+    collectionRef: "patrollers",
   },
 ];

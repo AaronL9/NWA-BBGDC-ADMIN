@@ -67,7 +67,8 @@
 .news-loader,
 .admin-report-loader,
 .global-loader,
-.global-spinner {
+.global-spinner,
+.loader-overlay {
   position: fixed;
   inset: 0;
   margin: auto;
