@@ -1,11 +1,37 @@
-import { useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import { Outlet } from "react-router-dom";
+import { db, generateToken, messaging } from "../config/firebase";
 
 // components
 import Sidebar from "../components/sidebar/Sidebar";
+import { onMessage } from "firebase/messaging";
+
+import { doc, setDoc } from "firebase/firestore";
+import { AuthContext } from "../context/AuthContext";
 
 export default function RootLayout() {
   const [isOpen, setIsOpen] = useState(false);
+  const { admin } = useContext(AuthContext);
+
+  useEffect(() => {
+    const storeAdminToken = async () => {
+      try {
+        const token = await generateToken();
+        console.log(token);
+        const docRef = doc(db, "admin_push_token", admin.uid);
+        await setDoc(docRef, { token });
+      } catch (error) {
+        console.log(error);
+      }
+    };
+    storeAdminToken();
+    onMessage(messaging, (payload) => {
+      console.log(payload);
+      new Notification(payload.notification.title, {
+        body: payload.notification.body,
+      });
+    });
+  }, [admin]);
 
   return (
     <>
@@ -28,10 +54,6 @@ export default function RootLayout() {
       </main>
       <footer>
         <div className="footer-content">
-          {/* <img
-            src="/images/logo.png"
-            alt="ph_seal_pangasinan_dagupan.png"
-          /> */}
           <div className="footer-text">
             <p>© 2024 Neighborhood Watch.</p>
             <p>All Rights Reserved.</p>

@@ -79,7 +79,7 @@ export default function PatrollerNavigation() {
             aria-label="nav tabs example"
             role="navigation"
           >
-            <LinkTab label="Patrollers" href="patrollers" />
+            <LinkTab label="patrollers" href="patrollers/all" />
             <LinkTab label="Message All" href="patrollers/send-all" />
             <LinkTab label="Locate All" href="patrollers/all-location" />
           </Tabs>

@@ -2,6 +2,7 @@ import { initializeApp } from "firebase/app";
 import { getStorage } from "firebase/storage";
 import { getAuth } from "firebase/auth";
 import { getFirestore } from "firebase/firestore";
+import { getMessaging, getToken } from "firebase/messaging";
 
 // import { getFunctions, connectFunctionsEmulator } from "firebase/functions";
 // import { getFirestore, connectFirestoreEmulator } from "firebase/firestore";
@@ -21,6 +22,19 @@ const app = initializeApp(firebaseConfig);
 export const db = getFirestore(app);
 export const storage = getStorage(app);
 export const auth = getAuth(app);
+export const messaging = getMessaging(app);
+
+export const generateToken = async () => {
+  const permission = await Notification.requestPermission();
+  console.log(permission);
+  if (permission === "granted") {
+    const token = await getToken(messaging, {
+      vapidKey: import.meta.env.VITE_FIREBASE_VAPID,
+    });
+    console.log("orignal token", token);
+    return token;
+  }
+};
 
 // functions
 // const functions = getFunctions(app);

@@ -5,6 +5,7 @@ import { db } from "../../../config/firebase";
 
 export default function AllLocation() {
   const [patrollersLocation, setPatrollersLocation] = useState([]);
+
   useEffect(() => {
     const fetchPatrollersLocation = async () => {
       const querySnapshot = await getDocs(collection(db, "patrollers"));

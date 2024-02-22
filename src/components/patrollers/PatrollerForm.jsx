@@ -47,11 +47,12 @@ export default function PatrollerForm({ setOpenForm }) {
       }
 
       setOpenForm(false);
-      setLoading(false);
+      alert("Added Successfully");
     } catch (error) {
-      setLoading(false);
       console.log(error.message);
       alert("Failed to add patroller");
+    } finally {
+      setLoading(false);
     }
   };
 

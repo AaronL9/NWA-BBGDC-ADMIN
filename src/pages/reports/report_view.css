@@ -7,6 +7,93 @@
   margin-bottom: 1rem;
 }
 
+.report h2 {
+  margin-block: 2rem 1rem;
+  text-align: left;
+}
+.report__actions {
+  display: flex;
+  justify-content: center;
+  gap: 1rem;
+}
+
+/* ===== REPORT FORM ===== */
+.report-form {
+  margin-bottom: 1rem;
+}
+
+.report-form tbody {
+  /* border: 2px solid black; */
+  /* width: min(1100px, 90%); */
+  margin-inline: auto;
+  background-color: #f1f3ff;
+}
+
+.report-form table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+.report-form__first-cell {
+  display: flex;
+  justify-content: space-between;
+}
+.report-form__first-cell input[id="reportee-name"] {
+  width: 200px;
+}
+
+.report-form caption {
+  font-weight: 500;
+  margin-bottom: 4px;
+  text-align: start;
+}
+.report-form .status-report {
+  color: red;
+}
+.report-form .status-ongoing {
+  color: #f29339;
+}
+.report-form .status-resolved {
+  color: green;
+}
+
+.report-form textarea {
+  width: 100%;
+  outline: none;
+  padding: 2px;
+}
+.report-form textarea:disabled {
+  color: black;
+}
+
+.report-form td {
+  padding: 10px;
+  border: 2px solid #000;
+}
+
+.report-form label {
+  margin-right: 8px;
+  font-weight: 500;
+}
+.report-form input {
+  outline: none;
+  border: none;
+  padding: 2px;
+}
+.report-form input:disabled {
+  color: black;
+}
+
+.report-form__location {
+  display: flex;
+}
+.report-form__location input {
+  flex: 1;
+}
+.report-form input[name="location"] {
+  width: 70%;
+}
+
 .report-form__captions {
   display: flex;
   align-items: center;

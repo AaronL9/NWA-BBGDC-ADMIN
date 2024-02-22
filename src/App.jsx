@@ -23,6 +23,7 @@ import PatrollerLocation from "./pages/patrollers/PatrollerLocation.jsx";
 import PatrollerNavigation from "./pages/patrollers/PatrollerNavigation.jsx";
 import GroupChat from "./pages/patrollers/Tabs/GroupChat.jsx";
 import AllLocation from "./pages/patrollers/Tabs/AllLocation.jsx";
+import PatrollerProfile from "./pages/patrollers/PatrollerProfile.jsx";
 
 const router = createBrowserRouter(
   createRoutesFromElements(
@@ -44,7 +45,8 @@ const router = createBrowserRouter(
             <Route path="send-all" element={<GroupChat />} />
             <Route path="all-location" element={<AllLocation />} />
           </Route>
-          <Route path="patrollers/chat/:name/:id" element={<PatrollerChat />} />
+          <Route path="patrollers/chat/:roomId" element={<PatrollerChat />} />
+          <Route path="patrollers/info/:id" element={<PatrollerProfile />} />
           <Route
             path="patrollers/location/:id"
             element={<PatrollerLocation />}

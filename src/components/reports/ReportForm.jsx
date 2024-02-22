@@ -5,7 +5,7 @@ import StatusMenu from "./StatusMenu.jsx";
 export default function ReportForm({ data, onChangeHandler }) {
   return (
     <>
-      <h2>Citizen&apos;s Crime/Incident Report</h2>
+      <h2>REPORT</h2>
       <form className="report-form">
         <table>
           <caption className="report-form__captions">
