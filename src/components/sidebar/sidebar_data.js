@@ -5,19 +5,14 @@ export const navListData = [
     path: "dashboard",
   },
   {
+    iconClass: "bx bx-upload",
+    name: "Publish Article",
+    path: "publish-article",
+  },
+  {
     iconClass: "bxs-report",
     name: "Reports",
     path: "reports",
-  },
-  {
-    iconClass: "bx-fingerprint",
-    name: "Action",
-    path: "action",
-  },
-  {
-    iconClass: "bx-folder-open",
-    name: "Records",
-    path: "records",
   },
   {
     iconClass: "bx-pie-chart-alt-2",

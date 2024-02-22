@@ -24,12 +24,15 @@ export default function Articles() {
 
   console.log(articles);
   return (
-    <div className="crime-board">
-      <div className="crime-board-post">
-        {articles.map((article, index) => (
-          <ArticleCard key={index} docId={article.id} {...article} />
-        ))}
+    <>
+      <h2 className="banner__title">Articles</h2>
+      <div className="crime-board">
+        <div className="crime-board-post">
+          {articles.map((article, index) => (
+            <ArticleCard key={index} docId={article.id} {...article} />
+          ))}
+        </div>
       </div>
-    </div>
+    </>
   );
 }

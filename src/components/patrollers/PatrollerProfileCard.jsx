@@ -1,43 +1,57 @@
 import PropTypes from "prop-types";
-import { useNavigate } from "react-router-dom";
+import { useState } from "react";
 
-export default function PatrollerProfileCard({
-  firstName,
-  lastName,
-  email,
-  contactNum,
-  roomId,
-}) {
-  const navigate = useNavigate();
+import VisibilityIcon from "@mui/icons-material/Visibility";
+import VisibilityOffIcon from "@mui/icons-material/VisibilityOff";
+
+export default function PatrollerProfileCard({ data }) {
+  const avatarSrc = data.avatarUrl ?? "/images/profile-circle.png";
+
+  const [visible, setVisible] = useState(false);
+  const inputType = visible ? "text" : "password";
+
   return (
     <div className="patroller-card">
-      <img className="patroller-card__profile-pic" src="/images/profile.jpeg" />
+      <img className="patroller-card__profile-pic" src={avatarSrc} />
+      <p className="patroller-card__name">{`${data.firstName} ${data.lastName}`}</p>
       <div className="patroller-card__details">
-        <span className="patroller-card__name">{`${firstName} ${lastName}`}</span>
         <ul className="patroller-card__info-list">
           <li>
-            <strong>Email:</strong> {email}
+            <strong>Contact:</strong> <br /> {data.phoneNo}
           </li>
           <li>
-            <strong>Address:</strong> 123 Main Street
+            <strong>Email:</strong> <br />
+            {data.email}
           </li>
           <li>
-            <strong>Phone:</strong> {contactNum}
+            <strong>Address:</strong>
+            <br /> {data.address}
+          </li>
+          <li className="patroller-card__password">
+            <strong>password:</strong>
+            <br />
+            <input type={inputType} value={data.password} disabled />
+            {visible ? (
+              <VisibilityOffIcon onClick={() => setVisible(false)} />
+            ) : (
+              <VisibilityIcon onClick={() => setVisible(true)} />
+            )}
           </li>
         </ul>
-        <div className="patroller-card__controls">
-          <button onClick={() => navigate(roomId)}>Message</button>
-          <button>Locate</button>
-        </div>
+        <div className="patroller-card__controls"></div>
       </div>
     </div>
   );
 }
 
 PatrollerProfileCard.propTypes = {
+  data: PropTypes.object,
+  uid: PropTypes.string,
   firstName: PropTypes.string,
   lastName: PropTypes.string,
   email: PropTypes.string,
   contactNum: PropTypes.string,
   roomId: PropTypes.string,
+  address: PropTypes.string,
+  avatar: PropTypes.string,
 };

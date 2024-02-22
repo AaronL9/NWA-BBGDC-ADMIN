@@ -7,6 +7,10 @@ const ReportCard = ({ data }) => {
 
   return (
     <div className="report-card">
+      <p className="report-card__status">
+        status: <span className={`circle circle-${data.status}`}></span>
+        <span>{data.status}</span>
+      </p>
       <dl className="report-card__details">
         <dt>Offense:</dt>
         <dd>{data.offense}</dd>

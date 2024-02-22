@@ -5,6 +5,7 @@ import { AdminDashboardData } from "./dashboard_data";
 export default function AdminDashboard() {
   return (
     <>
+      <h2 className="banner__title">Dashboard</h2>
       <div className="dashboard">
         <div className="dashboard-content">
           <div className="dashboard-cards">
@@ -15,23 +16,12 @@ export default function AdminDashboard() {
                   path={data.path}
                   icon={data.icon}
                   label={data.label}
+                  folder={data.collectionRef}
                 />
               );
             })}
           </div>
         </div>
-        <img
-          src="/images/BG.png"
-          alt=""
-          style={{
-            width: "90%",
-            marginInline: "auto",
-            marginBlock: "2rem",
-            borderRadius: "1rem",
-            height: "350px",
-            objectFit: "cover",
-          }}
-        />
       </div>
     </>
   );

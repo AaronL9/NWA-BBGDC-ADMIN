@@ -33,3 +33,18 @@ functions
 firebase.json
 firestore.rules
 firestore.indexes.json
+
+# extra
+legacy.js
+
+# Firebase
+functions
+/functions/node_modules
+/functions/.runtimeconfig.json
+.firebaserc
+firebase.json
+firestore.rules
+firestore.indexes.json
+
+# extra
+legacy.js

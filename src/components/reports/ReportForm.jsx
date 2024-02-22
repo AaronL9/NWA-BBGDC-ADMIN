@@ -1,15 +1,16 @@
 import PropTypes from "prop-types";
 import { toDateTime } from "../../util/dateFormatter.js";
+import StatusMenu from "./StatusMenu.jsx";
 
 export default function ReportForm({ data, onChangeHandler }) {
   return (
     <>
-      <h2>Citizen&apos;s Crime/Incident Report</h2>
+      <h2>REPORT</h2>
       <form className="report-form">
         <table>
-          <caption>
-            Status:{" "}
-            <span className={`status-${data.status}`}>{data.status}</span>
+          <caption className="report-form__captions">
+            <span>Status:</span>{" "}
+            <StatusMenu status={data.status} docID={data.docID} />
           </caption>
           <tbody>
             <tr>
@@ -56,7 +57,7 @@ export default function ReportForm({ data, onChangeHandler }) {
                 <input
                   id="date"
                   type="datetime-local"
-                  value={toDateTime(data.date)}
+                  value={toDateTime(data.timestamp)}
                   name="date"
                   disabled
                 />

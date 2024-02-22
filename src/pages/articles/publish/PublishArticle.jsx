@@ -2,7 +2,13 @@ import "./publish_article.css";
 import { useState } from "react";
 
 // firebase
-import { collection, addDoc, serverTimestamp, doc, updateDoc } from "firebase/firestore";
+import {
+  collection,
+  addDoc,
+  serverTimestamp,
+  doc,
+  updateDoc,
+} from "firebase/firestore";
 import { uploadBytes, ref, getDownloadURL } from "firebase/storage";
 import { db, storage } from "../../../config/firebase";
 
@@ -32,12 +38,15 @@ export default function PublishArticle() {
         updatedAt: serverTimestamp(),
       });
       const uploadPromises = media.map(async (obj) => {
-        const storageRef = ref(storage, `articles/${docRef.id}/${obj.file.name}`);
+        const storageRef = ref(
+          storage,
+          `articles/${docRef.id}/${obj.file.name}`
+        );
         return uploadBytes(storageRef, obj.file);
       });
 
       const snapshots = await Promise.all(uploadPromises);
-      const imageUrl = []
+      const imageUrl = [];
       for (const snapshot of snapshots) {
         const downloadURL = await getDownloadURL(
           ref(storage, snapshot.ref.fullPath)
@@ -45,10 +54,10 @@ export default function PublishArticle() {
         imageUrl.push(downloadURL.toString());
       }
 
-      console.log(imageUrl)
+      console.log(imageUrl);
 
       await updateDoc(doc(db, "articles", docRef.id), {
-        imageUrl
+        imageUrl,
       });
 
       setTitle("");
@@ -61,6 +70,7 @@ export default function PublishArticle() {
 
   return (
     <>
+      <h2 className="banner__title">Publish Article</h2>
       <div className="publish">
         <form
           onSubmit={handleSubmit}

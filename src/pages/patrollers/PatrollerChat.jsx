@@ -1,9 +1,21 @@
-import { useState, useCallback, useEffect } from "react";
-import { useParams } from "react-router-dom";
+import { useState, useCallback, useEffect, useContext } from "react";
+import { useNavigate, useParams } from "react-router-dom";
 import { useAuthContext } from "../../hooks/useAuthContext.jsx";
 import { v4 as uuidv4 } from "uuid";
-import { MessageList, Input } from "react-chat-elements";
-import "react-chat-elements/dist/main.css";
+import { serverTimestamp } from "firebase/firestore";
+
+// CHAT UI
+import "@chatscope/chat-ui-kit-styles/dist/default/styles.min.css";
+import {
+  MainContainer,
+  ChatContainer,
+  MessageList,
+  Message,
+  MessageInput,
+  ConversationHeader,
+  Avatar,
+  InfoButton,
+} from "@chatscope/chat-ui-kit-react";
 
 // firebase
 import {
@@ -15,22 +27,39 @@ import {
   onSnapshot,
 } from "firebase/firestore";
 import { db } from "../../config/firebase";
+import { formatTimeChat } from "../../util/dateFormatter.js";
+import { ChatContext } from "../../context/ChatContext.jsx";
+import { AuthContext } from "../../context/AuthContext.jsx";
 
 export default function Patrollers() {
+  const { avatar } = useContext(ChatContext);
+  const { roomId } = useParams();
+
+  const patrollerName = localStorage.getItem("patrollerName");
+  const patrollerId = localStorage.getItem("patrollerId");
+
+  const navigate = useNavigate();
+  const authCtx = useContext(AuthContext);
+
   const { admin } = useAuthContext();
-  const { id: roomId } = useParams();
   const [messages, setMessages] = useState([]);
   const [inputMessage, setInputMessage] = useState({
-    _id: "",
     createdAt: "",
     text: "",
     user: { _id: admin.email },
   });
 
-  const inputChatHanlder = (e) => {
+  function removeEmptyLines(inputString) {
+    const lines = inputString.split("\n");
+    const nonEmptyLines = lines.filter((line) => line.trim() !== "");
+    const resultString = nonEmptyLines.join("\n");
+    return resultString;
+  }
+
+  const inputChatHanlder = (_, __, text) => {
     setInputMessage((value) => ({
       ...value,
-      text: e.target.value,
+      text: text,
     }));
   };
 
@@ -39,13 +68,15 @@ export default function Patrollers() {
     const q = query(collectionRef, orderBy("createdAt", "asc"));
 
     const unsubscribe = onSnapshot(q, (querySnapshot) => {
-      console.log("querySnapshot unsusbscribe");
+      if (!querySnapshot.docs[0].data().createdAt) return;
       setMessages(
         querySnapshot.docs.map((doc) => {
           const data = doc.data();
           return {
             ...data,
-            position: doc.data().user._id === admin.email ? "right" : "left",
+            _id: doc.id,
+            position: data.user._id === admin.email ? "outgoing" : null,
+            type: "text",
           };
         })
       );
@@ -53,33 +84,106 @@ export default function Patrollers() {
     return unsubscribe;
   }, [admin.email, roomId]);
 
-  const onSend = useCallback(() => {
-    setMessages((previousMessages) => [...previousMessages, inputMessage]);
-    const chatDocRef = doc(collection(db, "rooms", roomId, "chats"));
-    setDoc(chatDocRef, {
-      ...inputMessage,
-      createdAt: new Date(),
-      _id: uuidv4(),
-    });
-  }, [inputMessage, roomId]);
+  const onSend = useCallback(async () => {
+    inputMessage.text = removeEmptyLines(inputMessage.text);
 
-  console.log(messages);
+    const docID = uuidv4();
+    const chatDocRef = doc(db, "rooms", roomId, "chats", docID);
+
+    try {
+      await setDoc(chatDocRef, {
+        ...inputMessage,
+        createdAt: serverTimestamp(),
+      });
+
+      const response = await fetch(
+        `http://${
+          import.meta.env.VITE_API_ENDPOINT
+        }/api/push/chat-notification`,
+        {
+          method: "POST",
+          body: JSON.stringify({ patrollerId }),
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: authCtx.admin.accessToken,
+          },
+        }
+      );
+
+      const json = await response.json();
+
+      if (!response.ok) {
+        console.log(json);
+      }
+
+      console.log(json);
+    } catch (error) {
+      alert(error.message);
+      console.log(error);
+    }
+  }, [inputMessage, roomId, authCtx.admin.accessToken]);
 
   return (
     <div className="patroller__chat">
-      <MessageList
-        className="message-list"
-        lockable={false}
-        toBottomHeight={"100%"}
-        dataSource={messages}
-      />
-      <Input
-        className="chat__input"
-        placeholder="Type here..."
-        multiline={true}
-        rightButtons={<button onClick={onSend}>send</button>}
-        onChange={inputChatHanlder}
-      />
+      <div style={{ position: "relative", height: "500px" }}>
+        <MainContainer>
+          <ChatContainer>
+            <ConversationHeader>
+              <ConversationHeader.Back
+                onClick={() => navigate("/patrollers")}
+              />
+              <Avatar
+                src={avatar ? avatar : "/images/profile-circle.png"}
+                style={{ objectFit: "cover" }}
+              />
+              <ConversationHeader.Content>
+                <span>{patrollerName}</span>
+              </ConversationHeader.Content>
+              <ConversationHeader.Actions>
+                <InfoButton
+                  title="Show info"
+                  onClick={() =>
+                    navigate(`/patrollers/location/${patrollerId}`)
+                  }
+                />
+              </ConversationHeader.Actions>
+            </ConversationHeader>
+            <MessageList>
+              {messages.map((message) => (
+                <Message
+                  key={message._id}
+                  className="patroller__chat-container"
+                  type="text"
+                  model={{
+                    message: message.text,
+                    direction: message.position,
+                    position: "last",
+                    sentTime: "just now",
+                  }}
+                >
+                  {!message.position && (
+                    <Message.Footer
+                      className="patroller__chat-footer"
+                      sentTime={formatTimeChat(message.createdAt)}
+                    />
+                  )}
+                  {!message.position && (
+                    <Avatar
+                      src={avatar ? avatar : "/images/profile-circle.png"}
+                    />
+                  )}
+                </Message>
+              ))}
+            </MessageList>
+            <MessageInput
+              placeholder="Type message here"
+              attachButton={false}
+              onChange={inputChatHanlder}
+              onSend={onSend}
+            />
+          </ChatContainer>
+        </MainContainer>
+      </div>
     </div>
   );
 }
