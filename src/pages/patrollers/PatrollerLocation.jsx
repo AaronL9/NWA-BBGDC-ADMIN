@@ -4,7 +4,8 @@ import { doc, onSnapshot } from "firebase/firestore";
 import { db } from "../../config/firebase";
 import PatrollerProfileCard from "../../components/patrollers/PatrollerProfileCard";
 import Spinner from "../../components/global/spinner/Spinner";
-import MemoizedMapView from "../../components/maps/MemoizedMapView";
+// import MemoizedMapView from "../../components/maps/MemoizedMapView";
+import MapView from "../../components/reports/MapView.jsx";
 
 export default function PatrollerLocation() {
   const { id } = useParams();
@@ -49,7 +50,7 @@ export default function PatrollerLocation() {
           <PatrollerProfileCard data={patrollerData} />
           {location && (
             <div className="patroller-route__map">
-              <MemoizedMapView coords={location} />
+              <MapView coords={location} />
             </div>
           )}
         </div>

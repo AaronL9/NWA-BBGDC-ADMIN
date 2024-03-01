@@ -49,6 +49,7 @@
   gap: 1rem;
   align-items: center;
   flex: 1;
+  position: relative;
 }
 .patroller-card__profile-pic {
   width: 100px;
@@ -75,6 +76,11 @@
 }
 .patroller-card__info-list input {
   border: none;
+}
+.patroller-card__controls {
+  position: absolute;
+  bottom: 0;
+  left: 0;
 }
 
 .message-list {

@@ -1,8 +1,8 @@
 import PropTypes from "prop-types";
+import ConfirmDeletion from "./ConfirmDeletion";
 
 export default function PatrollerProfileCard({ data }) {
   const avatarSrc = data.avatarUrl ?? "/images/profile-circle.png";
-
   return (
     <div className="patroller-card">
       <img className="patroller-card__profile-pic" src={avatarSrc} />
@@ -26,7 +26,9 @@ export default function PatrollerProfileCard({ data }) {
             <br /> {data.address}
           </li>
         </ul>
-        <div className="patroller-card__controls"></div>
+        <div className="patroller-card__controls">
+          <ConfirmDeletion uid={data.uid} />
+        </div>
       </div>
     </div>
   );
