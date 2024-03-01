@@ -12,6 +12,7 @@ module.exports = {
     ".eslintrc.cjs",
     "functions",
     "firebase-messaging-sw.js",
+    "legacy.js",
   ],
   parserOptions: { ecmaVersion: "latest", sourceType: "module" },
   settings: { react: { version: "18.2" } },

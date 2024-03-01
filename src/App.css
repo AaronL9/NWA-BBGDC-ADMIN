@@ -1,6 +1,12 @@
 .banner {
   padding: 1rem 2rem;
   /* border: 1px solid black; */
+  background-image: url("/images/BG.png");
+  background-size: contain;
+  border-bottom-left-radius: 45px;
+  border-bottom-right-radius: 45px;
+  margin-bottom: 1rem;
+  margin-inline: 1rem;
 }
 
 .banner__upper {
@@ -11,11 +17,8 @@
 
 .banner__name {
   font-weight: 600;
-  /* border-left: 5px solid var(--primary-color); */
   padding: 0.2rem 2rem;
-  background-color: var(--primary-color);
   color: white;
-  border-radius: 50px;
 }
 
 .banner__name span {
@@ -23,14 +26,13 @@
 }
 
 .banner__title {
-  font-weight: bold;
-  text-transform: capitalize;
-  font-size: 2rem;
   width: fit-content;
   margin-inline: auto;
-  text-align: center;
-  border-bottom: 5px solid var(--primary-color);
-  margin-bottom: 1.5rem;
+  border-inline: 5px solid #192346;
+  padding-inline: 2rem;
+  margin-bottom: 2.5rem;
+  font-size: 2rem;
+  border-radius: 15px;
 }
 
 .banner__menu-btn {
@@ -51,6 +53,7 @@
 
 .banner__text {
   font-size: 1.25rem;
+  color: white;
 }
 
 /* image loader */

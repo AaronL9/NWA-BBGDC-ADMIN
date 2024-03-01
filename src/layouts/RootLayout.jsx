@@ -1,5 +1,5 @@
 import { useContext, useEffect, useState } from "react";
-import { Outlet } from "react-router-dom";
+import { Outlet, useLocation } from "react-router-dom";
 import { db, generateToken, messaging } from "../config/firebase";
 
 // components
@@ -10,16 +10,27 @@ import { doc, setDoc } from "firebase/firestore";
 import { AuthContext } from "../context/AuthContext";
 
 export default function RootLayout() {
+  const { pathname } = useLocation();
+
   const [isOpen, setIsOpen] = useState(false);
   const { admin } = useContext(AuthContext);
+
+  useEffect(() => {
+    window.scrollTo(0, 0);
+  }, [pathname]);
 
   useEffect(() => {
     const storeAdminToken = async () => {
       try {
         const token = await generateToken();
-        console.log(token);
-        const docRef = doc(db, "admin_push_token", admin.uid);
-        await setDoc(docRef, { token });
+        if (token) {
+          const docRef = doc(db, "admin_push_token", admin.uid);
+          await setDoc(docRef, { token });
+        } else {
+          console.log(
+            "No registration token available. Request permission to generate one."
+          );
+        }
       } catch (error) {
         console.log(error);
       }
@@ -27,8 +38,9 @@ export default function RootLayout() {
     storeAdminToken();
     onMessage(messaging, (payload) => {
       console.log(payload);
-      new Notification(payload.notification.title, {
-        body: payload.notification.body,
+      const { notification } = payload;
+      new Notification(notification.title, {
+        body: notification.body,
       });
     });
   }, [admin]);

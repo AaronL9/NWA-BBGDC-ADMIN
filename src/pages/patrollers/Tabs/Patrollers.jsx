@@ -7,7 +7,13 @@ import {
 } from "@chatscope/chat-ui-kit-react";
 
 // firebase
-import { collection, onSnapshot, query, where } from "firebase/firestore";
+import {
+  collection,
+  onSnapshot,
+  query,
+  where,
+  orderBy,
+} from "firebase/firestore";
 import { db } from "../../../config/firebase";
 import { AuthContext } from "../../../context/AuthContext.jsx";
 import { useNavigate } from "react-router-dom";
@@ -32,14 +38,16 @@ export default function Patrollers() {
 
   useEffect(() => {
     const unsubscribe = onSnapshot(
-      query(collection(db, "rooms"), where("admin.id", "==", admin.uid)),
+      query(
+        collection(db, "rooms"),
+        where("admin.id", "==", admin.uid),
+        orderBy("updatedAt", "desc")
+      ),
       (querySnapshot) => {
-        const data = querySnapshot.docs.map((doc) => {
-          return {
-            docId: doc.id,
-            patroller: doc.data().patroller,
-          };
-        });
+        const data = querySnapshot.docs.map((doc) => ({
+          docId: doc.id,
+          ...doc.data(),
+        }));
         setRooms(data);
         setLoading(false);
       },
@@ -77,8 +85,9 @@ export default function Patrollers() {
               <Conversation
                 key={data.docId}
                 name={data.patroller.displayName}
-                info="Yes i can do it for you"
                 onClick={() => navigatTo(data.patroller, data.docId)}
+                info={data?.lastMessage?.message ?? ""}
+                lastSenderName={data?.lastMessage?.id === admin.uid && "You"}
               >
                 <Avatar src={path} name="Lilly" />
               </Conversation>

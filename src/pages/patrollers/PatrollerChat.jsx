@@ -46,7 +46,7 @@ export default function Patrollers() {
   const [inputMessage, setInputMessage] = useState({
     createdAt: "",
     text: "",
-    user: { _id: admin.email },
+    user: { _id: admin.uid },
   });
 
   function removeEmptyLines(inputString) {
@@ -75,14 +75,14 @@ export default function Patrollers() {
           return {
             ...data,
             _id: doc.id,
-            position: data.user._id === admin.email ? "outgoing" : null,
+            position: data.user._id === admin.uid ? "outgoing" : null,
             type: "text",
           };
         })
       );
     });
     return unsubscribe;
-  }, [admin.email, roomId]);
+  }, [admin.email, roomId, admin.uid]);
 
   const onSend = useCallback(async () => {
     inputMessage.text = removeEmptyLines(inputMessage.text);
@@ -97,9 +97,7 @@ export default function Patrollers() {
       });
 
       const response = await fetch(
-        `http://${
-          import.meta.env.VITE_API_ENDPOINT
-        }/api/push/chat-notification`,
+        `${import.meta.env.VITE_API_ENDPOINT}/api/push/chat-notification`,
         {
           method: "POST",
           body: JSON.stringify({ patrollerId }),
@@ -115,13 +113,11 @@ export default function Patrollers() {
       if (!response.ok) {
         console.log(json);
       }
-
-      console.log(json);
     } catch (error) {
       alert(error.message);
       console.log(error);
     }
-  }, [inputMessage, roomId, authCtx.admin.accessToken]);
+  }, [inputMessage, roomId, authCtx.admin.accessToken, patrollerId]);
 
   return (
     <div className="patroller__chat">

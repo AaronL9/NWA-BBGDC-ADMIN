@@ -11,14 +11,18 @@
   margin-block: 2rem 1rem;
   text-align: left;
 }
-.report__actions {
-  display: flex;
-  justify-content: center;
-  gap: 1rem;
-}
 
 /* ===== REPORT FORM ===== */
 .report-form {
+  margin-bottom: 1rem;
+}
+.report-form__status {
+  display: flex;
+  align-items: center;
+}
+.report-form__captions {
+  display: flex;
+  align-items: center;
   margin-bottom: 1rem;
 }
 
@@ -40,12 +44,6 @@
 }
 .report-form__first-cell input[id="reportee-name"] {
   width: 200px;
-}
-
-.report-form caption {
-  font-weight: 500;
-  margin-bottom: 4px;
-  text-align: start;
 }
 .report-form .status-report {
   color: red;
@@ -94,16 +92,6 @@
   width: 70%;
 }
 
-.report-form__captions {
-  display: flex;
-  align-items: center;
-  gap: 5px;
-}
-.report-form__captions span {
-  font-weight: bold;
-  text-transform: uppercase;
-  letter-spacing: -0.5px;
-}
 .MUI-change-status-button-container {
   width: fit-content;
 }
@@ -122,7 +110,7 @@
   text-align: center;
 }
 
-.report__media {
+.report-form__media {
   display: flex;
   gap: 1rem;
   flex-wrap: wrap;
@@ -131,8 +119,8 @@
   background-color: white;
   padding: 1rem;
 }
-.report__media img,
-.report__image-wrapper {
+.report-form__media img,
+.report-form__image-wrapper {
   width: 250px;
   height: 200px;
   object-fit: cover;
@@ -140,11 +128,11 @@
   box-shadow: rgba(149, 157, 165, 0.2) 0px 8px 24px;
 }
 
-.report__archive-btn {
-  padding: 0 1rem;
-  margin-block: 1rem;
+.report-form__actions {
+  display: flex;
+  justify-content: center;
+  gap: 1rem;
 }
-
 .report__map {
   height: 500px;
   margin-top: 1rem;

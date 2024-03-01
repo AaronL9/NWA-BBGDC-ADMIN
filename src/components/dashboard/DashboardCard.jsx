@@ -30,14 +30,14 @@ export default function DashboardCard({ icon, label, path, folder }) {
 
           <div className="dashboard-card__number-wrapper">
             <div className="dashboard-card__number">
-              {isLoading ? <SmallLoader /> : size.totalReports}
+              <div>{isLoading ? <SmallLoader /> : size.totalReports}</div>
+              {folder === "reports" && (
+                <p className="dashboard-card__status">
+                  &#40;{size?.totalNewReports} new,{" "}
+                  {size?.totalOnprogressReports} ongoing&#41;
+                </p>
+              )}
             </div>
-            {folder === "reports" && (
-              <span>
-                &#40;{size?.totalNewReports} new, {size?.totalOnprogressReports}{" "}
-                pending&#41;{" "}
-              </span>
-            )}
           </div>
 
           <div className="line"></div>

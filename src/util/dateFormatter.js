@@ -1,18 +1,26 @@
-import { format, parseISO, isToday, isThisWeek, isThisYear } from "date-fns";
+import {
+  format,
+  parseISO,
+  isToday,
+  isThisWeek,
+  isThisYear,
+  fromUnixTime,
+} from "date-fns";
 import formatDistanceToNow from "date-fns/formatDistanceToNow";
 
-export function toDateTime(timestamp) {
-  const date = new Date(
-    timestamp.seconds * 1000 + timestamp.nanoseconds / 1000000
-  );
-
-  const formattedDate = `${date.getFullYear()}-${String(
-    date.getMonth() + 1
-  ).padStart(2, "0")}-${String(date.getDate()).padStart(2, "0")}T${String(
-    date.getHours()
-  ).padStart(2, "0")}:${String(date.getMinutes()).padStart(2, "0")}`;
+export function convertUnixTimestamp(unixTimestamp) {
+  const dateObject = fromUnixTime(Math.floor(unixTimestamp / 1000));
+  const formattedDate = format(dateObject, "MMMM d, yyyy h:mm:ss a");
 
   return formattedDate;
+}
+
+export function toDateTime(unixTimestamp) {
+  const dateObject = fromUnixTime(Math.floor(unixTimestamp / 1000));
+
+  const formattedDateTimeLocal = dateObject.toISOString().slice(0, 16);
+
+  return formattedDateTimeLocal;
 }
 
 export function formatDateString(timestamp) {

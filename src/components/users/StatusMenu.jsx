@@ -3,23 +3,46 @@ import Button from "@mui/material/Button";
 import Menu from "@mui/material/Menu";
 import MenuItem from "@mui/material/MenuItem";
 import PropTypes from "prop-types";
-import { doc, updateDoc } from "firebase/firestore";
-import { db } from "../../config/firebase";
+import { AuthContext } from "../../context/AuthContext";
 
-export default function StatusMenu({ status, docID }) {
+export default function StatusMenu({ status, uid }) {
   const [anchorEl, setAnchorEl] = React.useState(null);
   const [displayStatus, setDisplayStatus] = React.useState(status);
+  const authCtx = React.useContext(AuthContext);
 
   const open = Boolean(anchorEl);
   const handleClick = (event) => {
     setAnchorEl(event.currentTarget);
   };
 
-  const changeStatus = async (value) => {
+  const changeStatus = async (disabled) => {
     setAnchorEl(null);
-    setDisplayStatus(value);
-    const reportRef = doc(db, "reports", docID);
-    await updateDoc(reportRef, { status: value });
+    const value = disabled ? "Disabled" : "Active";
+    try {
+      const response = await fetch(
+        `http://localhost:5000/api/admin/change-user-status`,
+        {
+          method: "POST",
+          body: JSON.stringify({ uid, disabled }),
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: authCtx.admin.accessToken,
+          },
+        }
+      );
+
+      const json = await response.json();
+
+      if (json?.error || !response.ok) {
+        throw new Error(json.error);
+      }
+
+      alert(json.message);
+      setDisplayStatus(value);
+    } catch (error) {
+      console.log(error);
+      alert(error.message);
+    }
   };
 
   const handleClose = () => {
@@ -27,19 +50,19 @@ export default function StatusMenu({ status, docID }) {
   };
 
   return (
-    <div className="MUI-change-status-button-container">
+    <>
       <Button
         id="demo-positioned-button"
         aria-controls={open ? "demo-positioned-menu" : undefined}
         aria-haspopup="true"
         aria-expanded={open ? "true" : undefined}
         onClick={handleClick}
-        sx={{ color: "black", marginInline: "1rem" }}
-        variant="outlined"
+        sx={{
+          color: "black",
+          textTransform: "capitalize",
+          border: "1px solid black",
+        }}
       >
-        <div
-          className={`MUI-table-cell-status-circle status-${displayStatus}`}
-        ></div>
         {displayStatus}
       </Button>
       <Menu
@@ -57,15 +80,14 @@ export default function StatusMenu({ status, docID }) {
           horizontal: "left",
         }}
       >
-        <MenuItem onClick={() => changeStatus("report")}>Report</MenuItem>
-        <MenuItem onClick={() => changeStatus("ongoing")}>Ongoing</MenuItem>
-        <MenuItem onClick={() => changeStatus("resolved")}>Resolved</MenuItem>
+        <MenuItem onClick={() => changeStatus(false)}>Active</MenuItem>
+        <MenuItem onClick={() => changeStatus(true)}>Disabled</MenuItem>
       </Menu>
-    </div>
+    </>
   );
 }
 
 StatusMenu.propTypes = {
   status: PropTypes.string,
-  docID: PropTypes.string,
+  uid: PropTypes.string,
 };

@@ -1,6 +1,5 @@
 import { useContext, useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
-import { getReportMedia } from "./getReportMedia";
 import "./report_view.css";
 import "./reports.css";
 
@@ -19,7 +18,6 @@ import { AuthContext } from "../../context/AuthContext";
 export default function ReportView() {
   const { id } = useParams();
   const [details, setDetails] = useState();
-  const [media, setMedia] = useState([]);
   const [loading, setLoading] = useState(false);
   const authCtx = useContext(AuthContext);
 
@@ -33,7 +31,7 @@ export default function ReportView() {
       });
       alert("This report location is live to patrollers");
       const response = await fetch(
-        `http://${import.meta.env.VITE_API_ENDPOINT}/api/push/alert`,
+        `${import.meta.env.VITE_API_ENDPOINT}/api/push/alert`,
         {
           method: "GET",
           headers: {
@@ -59,15 +57,12 @@ export default function ReportView() {
         const docRef = doc(db, "reports", id);
         const docSnap = await getDoc(docRef);
         setDetails({ ...docSnap.data(), docID: id });
-
-        const result = await getReportMedia(`reports/${id}`);
-        setMedia(result);
       } catch (error) {
         console.log(error);
       }
     };
     fetchReport();
-  }, [id, setMedia]);
+  }, [id]);
 
   return (
     <>
@@ -78,8 +73,7 @@ export default function ReportView() {
       ) : (
         <div className="report">
           <ReportForm data={details} />
-
-          <div className="report__actions">
+          <div className="report-form__actions">
             <LoadingButton
               loading={loading}
               variant="contained"
@@ -88,14 +82,17 @@ export default function ReportView() {
               Forward location to patrollers
             </LoadingButton>
           </div>
-
           <h2>Images/Videos</h2>
-          <div className="report__media">
-            {media.map((url, index) => (
+          <div className="report-form__media">
+            {details.imageURL.map((url, index) => (
               <ReportMedia key={index} url={url} />
             ))}
           </div>
-          {details && <MapView coords={details.geoPoint} />}
+          {details && (
+            <div className="report__map">
+              <MapView coords={details.geoPoint} />
+            </div>
+          )}
         </div>
       )}
     </>

@@ -1,52 +1,21 @@
-.analysis {
-  width: min(1100px, 90%);
+.analytics {
+  width: 90%;
   margin-inline: auto;
-  display: flex;
-  justify-content: center;
-  flex-direction: column;
-  gap: 5rem;
-  align-items: center;
 }
 
-.analysis--bargraph {
-  display: flex;
-  gap: 1rem;
-  flex-direction: column;
-  justify-content: center;
-  border-radius: 0.9375rem;
-  background: #e8e8e8;
+.analytics__title {
+  border-left: 5px solid var(--primary-color);
+  padding-left: 1rem;
+}
+
+.analytics-container {
+  overflow: auto;
   width: 100%;
-  max-width: 60rem;
-  box-shadow: 0px 4px 4px 0px rgba(0, 0, 0, 0.25);
-  padding: 2rem;
-}
-
-.analysis--bargraph h2 {
-  font-weight: 500;
+  /* height: 500px; */
+  display: flex;
 }
 
 .piechart {
-  max-width: 20rem;
-}
-
-.chartflex {
-  display: flex;
-  flex-direction: row;
-  width: 100%;
-}
-
-.tabledata {
-  width: 100%;
-  display: flex;
+  margin-top: 5rem;
   padding: 2rem;
-}
-
-.table--data {
-  flex: 1;
-}
-
-.table--data-name,
-.table--data-age,
-.table--data-gender {
-  text-align: center;
 }

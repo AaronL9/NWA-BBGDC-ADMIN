@@ -1,9 +1,9 @@
 ::-webkit-scrollbar {
-  width: 0.4rem;
+  width: 4px;
 }
 
 ::-webkit-scrollbar-thumb {
-  border-radius: 10px;
+  border-radius: 5px;
   background: #1c274c96;
 }
 
@@ -28,6 +28,7 @@ body {
   font-family: "Poppins", sans-serif;
   background-color: #f5f5f5;
   background-color: #f0f2f5;
+  padding-left: 78px;
 }
 
 #root {
@@ -43,7 +44,7 @@ main {
 main,
 header,
 footer {
-  margin-left: 78px;
+  /* margin-left: 78px; */
   transition: all 0.5s ease;
 }
 
@@ -83,9 +84,9 @@ footer {
   color: black;
 }
 
-.move-right {
+/* .move-right {
   margin-left: 250px;
-}
+} */
 
 @media (max-width: 820px) {
   main,

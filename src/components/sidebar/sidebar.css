@@ -14,7 +14,7 @@
   width: 78px;
   background: #11101d;
   padding: 6px 14px;
-  z-index: 99;
+  z-index: 999;
   transition: all 0.5s ease;
 }
 .sidebar.open {
@@ -50,7 +50,7 @@
   margin-left: 2rem;
 }
 .sidebar .logo-details .logo_name::after {
-  content: 'Watch';
+  content: "Watch";
   position: absolute;
   font-size: 10px;
   bottom: -7px;
@@ -108,7 +108,8 @@
   pointer-events: none;
   transition: 0s;
 }
-.sidebar li:hover .tooltip, .sidebar li:focus .tooltip {
+.sidebar li:hover .tooltip,
+.sidebar li:focus .tooltip {
   opacity: 1;
   pointer-events: auto;
   transition: all 0.4s ease;
@@ -163,7 +164,9 @@
   background: #11101d;
   outline: none;
 }
-.sidebar li a:hover, .sidebar li a.active, .sidebar li a:focus {
+.sidebar li a:hover,
+.sidebar li a.active,
+.sidebar li a:focus {
   background: #fff;
 }
 .sidebar li a .links_name {

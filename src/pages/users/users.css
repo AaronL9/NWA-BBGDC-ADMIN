@@ -1,0 +1,10 @@
+.users {
+  width: 90%;
+  margin-inline: auto;
+}
+
+.users__title {
+  border-left: 5px solid #121e3a;
+  padding-left: 1rem;
+  margin-bottom: 2rem;
+}

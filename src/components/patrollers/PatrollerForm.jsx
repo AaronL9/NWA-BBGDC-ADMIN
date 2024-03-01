@@ -3,18 +3,16 @@ import CloseButton from "../global/close-button/CloseButton";
 import { useContext, useState } from "react";
 import { AuthContext } from "../../context/AuthContext";
 import Spinner from "../global/spinner/Spinner";
+import { formatPhoneNumber } from "../../util/stringFormatter";
 
 export default function PatrollerForm({ setOpenForm }) {
   const authCtx = useContext(AuthContext);
   const [loading, setLoading] = useState(false);
   const [patrollerData, setPatrollerData] = useState({
+    phoneNumber: "",
     firstName: "",
     lastName: "",
-    username: "",
-    email: "none",
     address: "",
-    phoneNo: "",
-    password: "",
   });
 
   const onChangeInputsHandler = (e) => {
@@ -26,10 +24,16 @@ export default function PatrollerForm({ setOpenForm }) {
 
   const onSubmitHanlder = async (e) => {
     e.preventDefault();
+
     try {
       setLoading(true);
+
+      const formattedPhoneNumber = formatPhoneNumber(patrollerData.phoneNumber);
+      patrollerData.phoneNumber = formattedPhoneNumber;
+
+      console.log(patrollerData);
       const response = await fetch(
-        `http://${import.meta.env.VITE_API_ENDPOINT}/api/admin/add_patroller`,
+        `${import.meta.env.VITE_API_ENDPOINT}/api/admin/add_patroller`,
         {
           method: "POST",
           body: JSON.stringify(patrollerData),
@@ -47,10 +51,9 @@ export default function PatrollerForm({ setOpenForm }) {
       }
 
       setOpenForm(false);
-      alert("Added Successfully");
+      alert(json.message);
     } catch (error) {
-      console.log(error.message);
-      alert("Failed to add patroller");
+      alert("Failed to add patroller: ", error.message);
     } finally {
       setLoading(false);
     }
@@ -67,6 +70,15 @@ export default function PatrollerForm({ setOpenForm }) {
         <div className="patroller-form">
           <p className="header">Add Patroller</p>
           <form onSubmit={onSubmitHanlder} onChange={onChangeInputsHandler}>
+            <input
+              type="text"
+              placeholder="Phone number"
+              name="phoneNumber"
+              maxLength={13}
+              pattern="(\+639\d{9}|09\d{9})"
+              title="Please enter a valid Philippine mobile number"
+              required
+            />
             <fieldset className="patroller-form__full-name">
               <input
                 type="text"
@@ -81,26 +93,7 @@ export default function PatrollerForm({ setOpenForm }) {
                 required
               />
             </fieldset>
-            <input
-              type="text"
-              placeholder="Username"
-              name="username"
-              required
-            />
-            <input
-              type="text"
-              placeholder="Phone number"
-              name="phoneNo"
-              required
-            />
-            <input type="text" placeholder="Email (optional)" name="email" />
-            <input type="text" placeholder="Address" name="address" />
-            <input
-              type="password"
-              placeholder="Password"
-              name="password"
-              required
-            />
+            <input type="text" placeholder="Address" name="address" required />
             <input type="submit" className="button" value="Add" />
           </form>
         </div>

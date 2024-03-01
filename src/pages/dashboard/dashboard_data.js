@@ -8,7 +8,7 @@ export const AdminDashboardData = [
   },
   {
     id: 3,
-    path: "/records",
+    path: "/users",
     label: "Users",
     icon: "/svg/admin_dashboard/users.svg",
     collectionRef: "users",

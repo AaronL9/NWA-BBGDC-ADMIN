@@ -24,6 +24,7 @@ import PatrollerNavigation from "./pages/patrollers/PatrollerNavigation.jsx";
 import GroupChat from "./pages/patrollers/Tabs/GroupChat.jsx";
 import AllLocation from "./pages/patrollers/Tabs/AllLocation.jsx";
 import PatrollerProfile from "./pages/patrollers/PatrollerProfile.jsx";
+import Users from "./pages/users/Users.jsx";
 
 const router = createBrowserRouter(
   createRoutesFromElements(
@@ -51,6 +52,7 @@ const router = createBrowserRouter(
             path="patrollers/location/:id"
             element={<PatrollerLocation />}
           />
+          <Route path="users" element={<Users />} />
         </Route>
       </Route>
     </>

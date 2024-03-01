@@ -1,16 +1,33 @@
 import PropTypes from "prop-types";
 import { toDateTime } from "../../util/dateFormatter.js";
+import LoadingButton from "@mui/lab/LoadingButton";
+import EditIcon from "@mui/icons-material/Edit";
+import DoneIcon from "@mui/icons-material/Done";
 import StatusMenu from "./StatusMenu.jsx";
+import { useState } from "react";
 
 export default function ReportForm({ data, onChangeHandler }) {
+  const [isDisabled, setIsDisabled] = useState(true);
+
   return (
     <>
       <h2>REPORT</h2>
       <form className="report-form">
         <table>
           <caption className="report-form__captions">
-            <span>Status:</span>{" "}
-            <StatusMenu status={data.status} docID={data.docID} />
+            <div className="report-form__status">
+              <span>STATUS:</span>
+              <StatusMenu status={data.status} docID={data.docID} />
+            </div>
+            <LoadingButton
+              variant="outlined"
+              startIcon={isDisabled ? <EditIcon /> : <DoneIcon />}
+              sx={{ marginLeft: "auto" }}
+              color="inherit"
+              onClick={() => setIsDisabled((prev) => !prev)}
+            >
+              {isDisabled ? "edit" : "done"}
+            </LoadingButton>
           </caption>
           <tbody>
             <tr>
@@ -24,7 +41,7 @@ export default function ReportForm({ data, onChangeHandler }) {
                       value={data.offense}
                       name="offense"
                       onChange={onChangeHandler}
-                      disabled
+                      disabled={isDisabled}
                     />
                   </div>
                   <div>
@@ -35,32 +52,23 @@ export default function ReportForm({ data, onChangeHandler }) {
                       value={data.reporteeName}
                       name="reporteeName"
                       onChange={onChangeHandler}
-                      disabled
+                      disabled={isDisabled}
                     />
                   </div>
                 </section>
               </td>
             </tr>
             <tr>
-              {/* <td colSpan="2">
-                  <label htmlFor="date-time">Date / Time Occured</label>
-                  <input
-                    id="date-time"
-                    type="datetime-local"
-                    value="2023-12-28T17:47"
-                  />
-                  <span>(On or Between)</span>
-                  <input type="datetime-local" />
-                </td> */}
               <td>
                 <label htmlFor="date">Date/Time Reported:</label>
                 <input
                   id="date"
                   type="datetime-local"
-                  value={toDateTime(data.timestamp)}
                   name="date"
-                  disabled
+                  value={toDateTime(data.timestamp)}
+                  disabled={isDisabled}
                 />
+                {/* <span>{convertUnixTimestamp(data.timestamp)}</span> */}
               </td>
             </tr>
             <tr>
@@ -72,7 +80,7 @@ export default function ReportForm({ data, onChangeHandler }) {
                     name="location"
                     value={data.location}
                     onChange={onChangeHandler}
-                    disabled
+                    disabled={isDisabled}
                   />
                 </div>
               </td>
@@ -87,7 +95,7 @@ export default function ReportForm({ data, onChangeHandler }) {
                   rows="5"
                   value={data.description}
                   onChange={onChangeHandler}
-                  disabled
+                  disabled={isDisabled}
                 ></textarea>
               </td>
             </tr>

@@ -29,4 +29,9 @@ export const navListData = [
     name: "Patrollers",
     path: "patrollers",
   },
+  {
+    iconClass: "bx bxs-user",
+    name: "Users",
+    path: "users",
+  },
 ];
