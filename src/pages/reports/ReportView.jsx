@@ -29,7 +29,6 @@ export default function ReportView() {
         coords: details.geoPoint,
         location: details.location,
       });
-      alert("This report location is live to patrollers");
       const response = await fetch(
         `${import.meta.env.VITE_API_ENDPOINT}/api/push/alert`,
         {
@@ -43,7 +42,7 @@ export default function ReportView() {
       if (!response.ok) {
         console.log(json);
       }
-      console.log(json);
+      alert("This report location is live to patrollers");
     } catch (error) {
       console.log(error);
     } finally {

@@ -37,9 +37,9 @@ const router = createBrowserRouter(
           <Route path="reports" element={<Reports />} />
           <Route path="reports/:id" element={<ReportView />} />
           <Route path="analytics" element={<Analytics />} />
-          <Route path="articles" element={<Articles />} />
-          <Route path="articles/:id" element={<EditArticle />} />
-          <Route path="publish-article" element={<PublishArticle />} />
+          <Route path="news" element={<Articles />} />
+          <Route path="news/:id" element={<EditArticle />} />
+          <Route path="publish-news" element={<PublishArticle />} />
           <Route path="patrollers" element={<PatrollerNavigation />}>
             <Route index element={<Patrollers />} />
             <Route path="send-all" element={<GroupChat />} />

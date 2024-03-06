@@ -6,8 +6,8 @@ export const navListData = [
   },
   {
     iconClass: "bx bx-upload",
-    name: "Publish Article",
-    path: "publish-article",
+    name: "Publish News",
+    path: "publish-news",
   },
   {
     iconClass: "bxs-report",
@@ -21,8 +21,8 @@ export const navListData = [
   },
   {
     iconClass: "bx-news",
-    name: "Articles",
-    path: "articles",
+    name: "News",
+    path: "news",
   },
   {
     iconClass: "bxs-user-badge",

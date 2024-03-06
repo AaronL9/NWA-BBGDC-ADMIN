@@ -10,7 +10,7 @@ export default function Articles() {
 
   useEffect(() => {
     const fetchArticles = async () => {
-      const querySnapshot = await getDocs(collection(db, "articles"));
+      const querySnapshot = await getDocs(collection(db, "news"));
       const data = [];
       querySnapshot.forEach((doc) => {
         const obj = doc.data();

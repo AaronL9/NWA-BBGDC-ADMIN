@@ -68,7 +68,7 @@ export default function Patrollers() {
     const q = query(collectionRef, orderBy("createdAt", "asc"));
 
     const unsubscribe = onSnapshot(q, (querySnapshot) => {
-      if (!querySnapshot.docs[0].data().createdAt) return;
+      if (!querySnapshot.docs[0]?.data()?.createdAt) return;
       setMessages(
         querySnapshot.docs.map((doc) => {
           const data = doc.data();

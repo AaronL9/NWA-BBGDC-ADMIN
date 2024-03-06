@@ -26,8 +26,12 @@ export default function EditArticle() {
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      await updateDoc(doc(db, "articles", id), { title, body });
-      console.log('updated')
+      await updateDoc(doc(db, "news", id), {
+        title,
+        body,
+        updatedAt: new Date().getTime(),
+      });
+      console.log("updated");
     } catch (e) {
       console.error("Error adding document: ", e);
     }
@@ -35,7 +39,7 @@ export default function EditArticle() {
 
   useEffect(() => {
     const fetchData = async () => {
-      const docRef = doc(db, "articles", id);
+      const docRef = doc(db, "news", id);
       const docSnap = await getDoc(docRef);
 
       if (docSnap.exists()) {

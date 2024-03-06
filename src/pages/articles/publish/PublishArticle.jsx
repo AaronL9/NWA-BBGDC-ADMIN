@@ -1,14 +1,9 @@
 import "./publish_article.css";
-import { useState } from "react";
+import { useContext, useState } from "react";
+import { v4 as uuidv4 } from "uuid";
 
 // firebase
-import {
-  collection,
-  addDoc,
-  serverTimestamp,
-  doc,
-  updateDoc,
-} from "firebase/firestore";
+import { setDoc, doc } from "firebase/firestore";
 import { uploadBytes, ref, getDownloadURL } from "firebase/storage";
 import { db, storage } from "../../../config/firebase";
 
@@ -21,27 +16,27 @@ import { formats, modules } from "../../../util/QuillTools";
 import { FilePond, registerPlugin } from "react-filepond";
 import "filepond/dist/filepond.min.css";
 import FilePondPluginFileValidateType from "filepond-plugin-file-validate-type";
+import { AuthContext } from "../../../context/AuthContext";
+import Spinner from "../../../components/global/spinner/Spinner";
 registerPlugin(FilePondPluginFileValidateType);
 
 export default function PublishArticle() {
+  const authCtx = useContext(AuthContext);
+
   const [title, setTitle] = useState("");
   const [body, setBody] = useState("");
   const [media, setMedia] = useState([]);
+  const [loading, setLoading] = useState(false);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      const docRef = await addDoc(collection(db, "articles"), {
-        title,
-        body,
-        createdAt: serverTimestamp(),
-        updatedAt: serverTimestamp(),
-      });
+      setLoading(true);
+      const docId = uuidv4();
+      const unixTimestamp = new Date().getTime();
+
       const uploadPromises = media.map(async (obj) => {
-        const storageRef = ref(
-          storage,
-          `articles/${docRef.id}/${obj.file.name}`
-        );
+        const storageRef = ref(storage, `news/${docId}/${obj.file.name}`);
         return uploadBytes(storageRef, obj.file);
       });
 
@@ -54,10 +49,21 @@ export default function PublishArticle() {
         imageUrl.push(downloadURL.toString());
       }
 
-      console.log(imageUrl);
-
-      await updateDoc(doc(db, "articles", docRef.id), {
+      await setDoc(doc(db, "news", docId), {
+        title,
+        body,
+        createdAt: unixTimestamp,
+        updatedAt: unixTimestamp,
         imageUrl,
+      });
+
+      fetch(`http://localhost:3000/api/push/news-notification`, {
+        method: "POST",
+        body: JSON.stringify({ title }),
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: authCtx.admin.accessToken,
+        },
       });
 
       setTitle("");
@@ -65,11 +71,18 @@ export default function PublishArticle() {
       setMedia([]);
     } catch (e) {
       console.error("Error adding document: ", e);
+    } finally {
+      setLoading(false);
     }
   };
 
   return (
     <>
+      {loading && (
+        <div className="loader-overlay">
+          <Spinner />
+        </div>
+      )}
       <h2 className="banner__title">Publish Article</h2>
       <div className="publish">
         <form

@@ -25,11 +25,12 @@
 } */
 .publish__description {
   width: 500px;
+  flex: 1;
   margin-bottom: 3rem;
 }
 
 .quill {
-  height: 200px;
+  height: 300px;
 }
 
 .publish__form input {

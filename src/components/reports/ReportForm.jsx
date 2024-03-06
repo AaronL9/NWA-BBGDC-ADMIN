@@ -1,10 +1,11 @@
 import PropTypes from "prop-types";
+import { useState } from "react";
 import { toDateTime } from "../../util/dateFormatter.js";
 import LoadingButton from "@mui/lab/LoadingButton";
 import EditIcon from "@mui/icons-material/Edit";
 import DoneIcon from "@mui/icons-material/Done";
 import StatusMenu from "./StatusMenu.jsx";
-import { useState } from "react";
+import ConfirmDeleteReport from "./ConfirmDeleteReport.jsx";
 
 export default function ReportForm({ data, onChangeHandler }) {
   const [isDisabled, setIsDisabled] = useState(true);
@@ -19,15 +20,18 @@ export default function ReportForm({ data, onChangeHandler }) {
               <span>STATUS:</span>
               <StatusMenu status={data.status} docID={data.docID} />
             </div>
-            <LoadingButton
-              variant="outlined"
-              startIcon={isDisabled ? <EditIcon /> : <DoneIcon />}
-              sx={{ marginLeft: "auto" }}
-              color="inherit"
-              onClick={() => setIsDisabled((prev) => !prev)}
-            >
-              {isDisabled ? "edit" : "done"}
-            </LoadingButton>
+            <div className="report-form__controlls">
+              <LoadingButton
+                variant="outlined"
+                startIcon={isDisabled ? <EditIcon /> : <DoneIcon />}
+                sx={{ marginLeft: "auto" }}
+                color="inherit"
+                onClick={() => setIsDisabled((prev) => !prev)}
+              >
+                {isDisabled ? "edit" : "done"}
+              </LoadingButton>
+              <ConfirmDeleteReport docID={data.docID} />
+            </div>
           </caption>
           <tbody>
             <tr>
@@ -68,7 +72,6 @@ export default function ReportForm({ data, onChangeHandler }) {
                   value={toDateTime(data.timestamp)}
                   disabled={isDisabled}
                 />
-                {/* <span>{convertUnixTimestamp(data.timestamp)}</span> */}
               </td>
             </tr>
             <tr>

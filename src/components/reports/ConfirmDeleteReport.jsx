@@ -1,6 +1,5 @@
 import * as React from "react";
 import PropTypes from "prop-types";
-import IconButton from "@mui/material/IconButton";
 import DeleteIcon from "@mui/icons-material/Delete";
 import Button from "@mui/material/Button";
 import LoadingButton from "@mui/lab/LoadingButton";
@@ -10,19 +9,21 @@ import DialogContent from "@mui/material/DialogContent";
 import DialogContentText from "@mui/material/DialogContentText";
 import DialogTitle from "@mui/material/DialogTitle";
 import Slide from "@mui/material/Slide";
-import { AuthContext } from "../../context/AuthContext";
 import { useNavigate } from "react-router-dom";
+import { deleteDoc, doc } from "firebase/firestore";
+import { db } from "../../config/firebase";
+import CustomizedSnackbars from "../global/snackbar/CustomizedSnackbars";
 
 const Transition = React.forwardRef(function Transition(props, ref) {
   return <Slide direction="up" ref={ref} {...props} />;
 });
 
-export default function ConfirmDeletion({ uid }) {
-  const authCtx = React.useContext(AuthContext);
+export default function ConfirmDeleteReport({ docID }) {
   const navigate = useNavigate();
 
   const [open, setOpen] = React.useState(false);
   const [loading, setLoading] = React.useState(false);
+  const [errorOccur, setErrorOccur] = React.useState(false);
 
   const handleClickOpen = () => {
     setOpen(true);
@@ -35,73 +36,64 @@ export default function ConfirmDeletion({ uid }) {
   const handleConfirm = async () => {
     try {
       setLoading(true);
-      const response = await fetch(
-        `${import.meta.env.VITE_API_ENDPOINT}/api/admin/delete_patroller`,
-        {
-          method: "DELETE",
-          body: JSON.stringify({ uid }),
-          headers: {
-            "Content-Type": "application/json",
-            Authorization: authCtx.admin.accessToken,
-          },
-        }
-      );
-
-      const json = await response.json();
-
-      if (json?.error || !response.ok) {
-        throw new Error(json.error);
-      }
-
-      console.log(json.message);
+      await deleteDoc(doc(db, "reports", docID));
+      setTimeout(() => {
+        setLoading(false);
+        setOpen(false);
+        navigate("/reports");
+      }, 3000);
     } catch (error) {
       console.log(error);
-    } finally {
+      setErrorOccur(true);
       setLoading(false);
       setOpen(false);
-      navigate("/patrollers");
     }
   };
 
   return (
     <React.Fragment>
-      <IconButton
+      <Button
         aria-label="delete"
-        size="large"
         color="error"
         onClick={handleClickOpen}
+        startIcon={<DeleteIcon />}
       >
-        <DeleteIcon fontSize="inherit" />
-      </IconButton>
+        Delete
+      </Button>
+      <CustomizedSnackbars
+        severity="error"
+        message="Something weng wrong"
+        show={errorOccur}
+        setShow={setErrorOccur}
+      />
       <Dialog
         open={open}
         TransitionComponent={Transition}
         keepMounted
-        onClose={handleClose}
         aria-describedby="alert-dialog-slide-description"
       >
-        <DialogTitle>{"Delete Patroller Account"}</DialogTitle>
+        <DialogTitle>{"Delete Report"}</DialogTitle>
         <DialogContent>
           <DialogContentText id="alert-dialog-slide-description">
-            Are you sure you want to delete the patroller account? This action
-            is irreversible, and the account&apos;s data will be permanently
-            removed from the system. Please confirm your decision before
-            proceeding
+            Are you sure you want to delete this report? This action is
+            irreversible, and the data will be permanently removed from the
+            system. Please confirm your decision before proceeding
           </DialogContentText>
         </DialogContent>
         <DialogActions>
-          <Button onClick={handleClose} color="error">
-            Cancel
-          </Button>
           <LoadingButton onClick={handleConfirm} loading={loading}>
             Confirm
           </LoadingButton>
+          <Button onClick={handleClose} color="error">
+            Cancel
+          </Button>
         </DialogActions>
       </Dialog>
     </React.Fragment>
   );
 }
 
-ConfirmDeletion.propTypes = {
+ConfirmDeleteReport.propTypes = {
   uid: PropTypes.string,
+  docID: PropTypes.string,
 };

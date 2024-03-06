@@ -18,6 +18,8 @@ import algoliasearch from "algoliasearch";
 import Spinner from "../../components/global/spinner/Spinner.jsx";
 import FilterMenu from "../../components/reports/FilterMenu.jsx";
 import { statusOptions, yearOptions } from "../../util/tableFilterLogic.js";
+import IconButton from "@mui/material/IconButton";
+import RefreshIcon from "@mui/icons-material/Refresh";
 
 const searchClient = algoliasearch(
   import.meta.env.VITE_ALGOLIA_APP_ID,
@@ -122,6 +124,7 @@ EnhancedTableToolbar.propTypes = {
   setQuery: PropTypes.func,
   setStatus: PropTypes.func,
   setYear: PropTypes.func,
+  setRefresh: PropTypes.func,
 };
 
 function EnhancedTableToolbar({
@@ -132,6 +135,7 @@ function EnhancedTableToolbar({
   setYear,
   year,
   status,
+  setRefresh,
 }) {
   return (
     <Toolbar
@@ -157,6 +161,12 @@ function EnhancedTableToolbar({
           }}
         />
       </Search>
+      <IconButton
+        sx={{ marginRight: "auto" }}
+        onClick={() => setRefresh((prev) => !prev)}
+      >
+        <RefreshIcon />
+      </IconButton>
       <div
         style={{
           display: "flex",
@@ -201,8 +211,7 @@ export default function ReportTable() {
   const [year, setYear] = React.useState("");
   const [searchValue, setSearchValue] = React.useState("");
   const [query, setQuery] = React.useState("");
-
-  console.log(year);
+  const [refresh, setRefresh] = React.useState(true);
 
   const handleChangePage = async (event, newPage) => {
     setPage(newPage);
@@ -221,30 +230,31 @@ export default function ReportTable() {
     setSortBy(property);
   };
 
+  const performSearch = React.useCallback(async () => {
+    try {
+      setLoading(true);
+      const index = order === "desc" ? mainIndex : replicaIndex;
+
+      const { hits, nbHits } = await index.search(query, {
+        hitsPerPage: rowsPerPage,
+        page: page,
+        filters: status,
+        numericFilters: year,
+        cacheable: false,
+      });
+
+      setRows(hits);
+      setTotalRows(nbHits);
+    } catch (error) {
+      console.error("Error performing search:", error);
+    } finally {
+      setLoading(false);
+    }
+  }, [query, rowsPerPage, page, order, status, year]);
+
   React.useEffect(() => {
-    const performSearch = async () => {
-      try {
-        setLoading(true);
-        const index = order === "desc" ? mainIndex : replicaIndex;
-
-        const { hits, nbHits } = await index.search(query, {
-          hitsPerPage: rowsPerPage,
-          page: page,
-          filters: status,
-          numericFilters: year,
-        });
-
-        setRows(hits);
-        setTotalRows(nbHits);
-      } catch (error) {
-        console.error("Error performing search:", error);
-      } finally {
-        setLoading(false);
-      }
-    };
-
     performSearch();
-  }, [query, rowsPerPage, page, totalRows, order, status, year]);
+  }, [performSearch, refresh]);
 
   return (
     <>
@@ -260,6 +270,7 @@ export default function ReportTable() {
           setQuery={setQuery}
           setStatus={setStatus}
           setYear={setYear}
+          setRefresh={setRefresh}
         />
         <TableContainer sx={{ maxHeight: 440 }}>
           <Table stickyHeader aria-label="sticky table">
