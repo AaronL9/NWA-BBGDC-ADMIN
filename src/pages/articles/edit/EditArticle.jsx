@@ -1,9 +1,14 @@
 import "./edit.css";
 import { useEffect, useState } from "react";
 
+// MUI
+import CheckIcon from "@mui/icons-material/Check";
+import Button from "@mui/material/Button";
+import Stack from "@mui/material/Stack";
+
 // firebase
 import { getDoc, doc, updateDoc } from "firebase/firestore";
-import { db } from "../../../config/firebase";
+import { db, storage } from "../../../config/firebase";
 
 // rich editor
 import ReactQuill from "react-quill";
@@ -15,25 +20,43 @@ import { FilePond, registerPlugin } from "react-filepond";
 import "filepond/dist/filepond.min.css";
 import FilePondPluginFileValidateType from "filepond-plugin-file-validate-type";
 import { useParams } from "react-router-dom";
+import Spinner from "../../../components/global/spinner/Spinner";
+import { ref, uploadBytes, getDownloadURL } from "@firebase/storage";
+import ConfirmDeleteNews from "../../../components/articles/ConfirmDeleteReport";
+import CustomizedSnackbars from "../../../components/global/snackbar/CustomizedSnackbars";
 registerPlugin(FilePondPluginFileValidateType);
 
 export default function EditArticle() {
+  const { id } = useParams();
+
   const [title, setTitle] = useState("");
   const [body, setBody] = useState("");
   const [media, setMedia] = useState([]);
-  const { id } = useParams();
+  const [showSnackbar, setShowSnackbar] = useState(false);
+
+  const [loading, setLoading] = useState(false);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
+      setLoading(true);
+      const storageRef = ref(storage, `news/${id}/news_image`);
+
+      if (media.length) await uploadBytes(storageRef, media[0].file);
+
+      const url = await getDownloadURL(storageRef);
+
       await updateDoc(doc(db, "news", id), {
         title,
         body,
         updatedAt: new Date().getTime(),
+        imageUrl: [url],
       });
-      console.log("updated");
+      setShowSnackbar(true);
     } catch (e) {
       console.error("Error adding document: ", e);
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -46,7 +69,6 @@ export default function EditArticle() {
         const obj = docSnap.data();
         setTitle(obj.title);
         setBody(obj.body);
-        console.log("Document data:", docSnap.data());
       } else {
         console.log("No such document!");
       }
@@ -56,12 +78,20 @@ export default function EditArticle() {
 
   return (
     <>
+      <CustomizedSnackbars
+        message="Success! The news has been updated."
+        setShow={setShowSnackbar}
+        show={showSnackbar}
+        severity="success"
+        position={{ vertical: "top", horizontal: "center" }}
+      />
+      {loading && (
+        <div className="loader-overlay">
+          <Spinner />
+        </div>
+      )}
       <div className="publish">
-        <form
-          onSubmit={handleSubmit}
-          encType="multipart/form-data"
-          className="publish__form"
-        >
+        <form className="publish__form">
           <div className="publish__title">
             <label htmlFor="title">Article</label>
             <input
@@ -87,15 +117,25 @@ export default function EditArticle() {
             <FilePond
               files={media}
               onupdatefiles={setMedia}
-              allowMultiple={true}
-              acceptedFileTypes={["video/*", "image/*"]}
+              allowMultiple={false}
+              acceptedFileTypes={["image/*"]}
               allowFileTypeValidation={true}
               name="file"
-              labelIdle='Upload image/videos or <span className="filepond--label-action">Browse</span>'
+              labelIdle='Upload image or <span className="filepond--label-action">Browse</span>'
               required
             />
           </div>
-          <button className="publish__btn">Update</button>
+          <Stack direction="row" spacing={2}>
+            <ConfirmDeleteNews docID={id} setLoading={setLoading} />
+            <Button
+              variant="contained"
+              endIcon={<CheckIcon />}
+              color="success"
+              onClick={handleSubmit}
+            >
+              Update
+            </Button>
+          </Stack>
         </form>
         <br />
       </div>

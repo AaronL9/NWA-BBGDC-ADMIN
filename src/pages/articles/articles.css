@@ -4,6 +4,7 @@
   max-width: 1200px;
   margin: auto;
   justify-content: center;
+  flex-direction: column;
 }
 
 .crime-board-post {
@@ -80,6 +81,12 @@
   font-weight: 500;
 }
 
+.news-pagination {
+  display: flex;
+  justify-content: center;
+  margin-top: auto;
+}
+
 @media (max-width: 940px) {
   .crime-card__text-footer {
     flex-wrap: wrap;
@@ -91,7 +98,7 @@
 @media (max-width: 820px) {
   .crime-card {
     flex-wrap: wrap;
-    flex-direction: column-reverse;
+    flex-direction: column;
     align-content: center;
     justify-content: center;
     gap: 1.5rem;

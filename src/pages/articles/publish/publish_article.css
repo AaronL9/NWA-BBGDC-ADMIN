@@ -20,9 +20,11 @@
   width: 100%;
 }
 
-/* .publish_image-upload {
-  
-} */
+.quill-editing-area {
+  width: 800px;
+  height: 500px;
+}
+
 .publish__description {
   width: 500px;
   flex: 1;

@@ -1,17 +1,25 @@
 import { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import PropType from "prop-types";
-import { formatTimestamp } from "../../util/dateFormatter";
-import { Timestamp } from "firebase/firestore";
+import { formatDateString } from "../../util/dateFormatter";
 import ImageLoader from "../global/image-loader/ImageLoader.jsx";
+import { limitString } from "../../util/stringFormatter.js";
 
-export default function ArticleCard({ title, createdAt, docId, imageUrl }) {
+export default function ArticleCard({
+  title,
+  createdAt,
+  updatedAt,
+  docId,
+  imageUrl,
+}) {
   const [isImageLoading, setIsImageIsLoading] = useState(true);
   const navigate = useNavigate();
 
   const handleClick = () => {
     navigate(docId);
   };
+
+  const correctTimeWord = createdAt === updatedAt ? "Posted" : "Updated";
 
   return (
     <div className="crime-card" onClick={handleClick}>
@@ -28,10 +36,10 @@ export default function ArticleCard({ title, createdAt, docId, imageUrl }) {
       </div>
       <div className="crime-card__content">
         <h2 className="crime-card__title">
-          <Link>{title}</Link>
+          <Link>{limitString(title, 32)}</Link>
         </h2>
         <div className="crime-card__date">
-          <span>{`Posted at ${formatTimestamp(createdAt)}`}</span>
+          <span>{`${correctTimeWord} on ${formatDateString(updatedAt)}`}</span>
         </div>
       </div>
     </div>
@@ -40,7 +48,8 @@ export default function ArticleCard({ title, createdAt, docId, imageUrl }) {
 
 ArticleCard.propTypes = {
   title: PropType.string,
-  createdAt: PropType.instanceOf(Timestamp),
+  createdAt: PropType.number,
+  updatedAt: PropType.number,
   docId: PropType.string,
   imageUrl: PropType.array,
 };

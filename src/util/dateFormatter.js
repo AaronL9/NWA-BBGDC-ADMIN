@@ -23,12 +23,10 @@ export function toDateTime(unixTimestamp) {
   return formattedDateTimeLocal;
 }
 
-export function formatDateString(timestamp) {
-  const date = new Date(
-    timestamp.seconds * 1000 + timestamp.nanoseconds / 1000000
-  );
+export function formatDateString(unixTimestamp) {
+  const dateObject = fromUnixTime(Math.floor(unixTimestamp / 1000));
 
-  return format(date, "MMM d yyyy hh:mm a");
+  return format(dateObject, "MMM d yyyy hh:mm a");
 }
 
 export function convertDateFormat(timestamp) {

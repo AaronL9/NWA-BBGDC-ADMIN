@@ -7,6 +7,7 @@ export default function CustomizedSnackbars({
   show,
   severity,
   setShow,
+  position = { vertical: "bottom", horizontal: "right" },
 }) {
   const handleClose = (event, reason) => {
     if (reason === "clickaway") {
@@ -19,9 +20,9 @@ export default function CustomizedSnackbars({
   return (
     <div>
       <Snackbar
-        anchorOrigin={{ vertical: "bottom", horizontal: "right" }}
+        anchorOrigin={position}
         open={show}
-        autoHideDuration={6000}
+        autoHideDuration={4000}
         onClose={handleClose}
       >
         <Alert
@@ -42,4 +43,5 @@ CustomizedSnackbars.propTypes = {
   show: PropTypes.bool,
   severity: PropTypes.string,
   setShow: PropTypes.func,
+  position: PropTypes.object,
 };

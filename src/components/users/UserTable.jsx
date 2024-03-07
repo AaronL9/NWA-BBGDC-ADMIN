@@ -43,7 +43,7 @@ const columns = [
     align: "center",
   },
   {
-    id: "address",
+    id: "houseAddress",
     label: "Address",
     minWidth: 170,
     align: "center",

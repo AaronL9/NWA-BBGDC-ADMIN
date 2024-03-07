@@ -16,13 +16,15 @@
 }
 
 .banner__name {
-  font-weight: 600;
+  font-weight: 400;
   padding: 0.2rem 2rem;
   color: white;
+  text-transform: uppercase;
+  font-size: 1.5rem;
 }
 
 .banner__name span {
-  font-weight: 400;
+  font-weight: 100;
 }
 
 .banner__title {
@@ -54,6 +56,8 @@
 .banner__text {
   font-size: 1.25rem;
   color: white;
+  /* text-wrap: nowrap; */
+  word-wrap: break-word;
 }
 
 /* image loader */

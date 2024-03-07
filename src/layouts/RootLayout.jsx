@@ -49,7 +49,9 @@ export default function RootLayout() {
     <>
       <header className={isOpen ? "banner move-right" : "banner"}>
         <div className="banner__upper">
-          <h1 className="banner__name">Neighborhood Watch</h1>
+          <h1 className="banner__name">
+            Neighborhood Watch <span>| Admin</span>
+          </h1>
           <div className="banner__logo">
             <img
               className="banner__logo-img"

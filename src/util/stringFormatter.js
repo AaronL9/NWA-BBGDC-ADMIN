@@ -1,8 +1,16 @@
-export const limitString = (str, maxLength) => {
-  if (str.length <= maxLength || window.outerWidth <= 750) {
-    return str;
+export const limitString = (inputString, maxLength) => {
+  if (inputString.length > maxLength) {
+    let trimmedString = inputString.substring(0, maxLength);
+
+    while (/\s$/.test(trimmedString)) {
+      trimmedString = trimmedString.substring(0, trimmedString.length - 1);
+    }
+
+    trimmedString += "...";
+
+    return trimmedString;
   } else {
-    return str.slice(0, maxLength) + "...";
+    return inputString;
   }
 };
 

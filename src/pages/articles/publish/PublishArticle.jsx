@@ -18,6 +18,7 @@ import "filepond/dist/filepond.min.css";
 import FilePondPluginFileValidateType from "filepond-plugin-file-validate-type";
 import { AuthContext } from "../../../context/AuthContext";
 import Spinner from "../../../components/global/spinner/Spinner";
+import CustomizedSnackbars from "../../../components/global/snackbar/CustomizedSnackbars";
 registerPlugin(FilePondPluginFileValidateType);
 
 export default function PublishArticle() {
@@ -27,6 +28,7 @@ export default function PublishArticle() {
   const [body, setBody] = useState("");
   const [media, setMedia] = useState([]);
   const [loading, setLoading] = useState(false);
+  const [showSnackbar, setShowSnackbar] = useState(false);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -36,7 +38,7 @@ export default function PublishArticle() {
       const unixTimestamp = new Date().getTime();
 
       const uploadPromises = media.map(async (obj) => {
-        const storageRef = ref(storage, `news/${docId}/${obj.file.name}`);
+        const storageRef = ref(storage, `news/${docId}/news_image`);
         return uploadBytes(storageRef, obj.file);
       });
 
@@ -57,7 +59,7 @@ export default function PublishArticle() {
         imageUrl,
       });
 
-      fetch(`http://localhost:3000/api/push/news-notification`, {
+      fetch(`${import.meta.env.VITE_API_ENDPOINT}/api/push/news-notification`, {
         method: "POST",
         body: JSON.stringify({ title }),
         headers: {
@@ -66,11 +68,12 @@ export default function PublishArticle() {
         },
       });
 
+      setShowSnackbar(true);
       setTitle("");
       setBody("");
       setMedia([]);
-    } catch (e) {
-      console.error("Error adding document: ", e);
+    } catch (error) {
+      alert(`Error adding document: ${error.message}`);
     } finally {
       setLoading(false);
     }
@@ -78,12 +81,19 @@ export default function PublishArticle() {
 
   return (
     <>
+      <CustomizedSnackbars
+        message="Success! The news has been uploaded."
+        setShow={setShowSnackbar}
+        show={showSnackbar}
+        severity="success"
+        position={{ vertical: "top", horizontal: "center" }}
+      />
       {loading && (
         <div className="loader-overlay">
           <Spinner />
         </div>
       )}
-      <h2 className="banner__title">Publish Article</h2>
+      <h2 className="banner__title">Publish News</h2>
       <div className="publish">
         <form
           onSubmit={handleSubmit}
@@ -91,7 +101,7 @@ export default function PublishArticle() {
           className="publish__form"
         >
           <div className="publish__title">
-            <label htmlFor="title">Article</label>
+            <label htmlFor="title">News Title</label>
             <input
               id="title"
               type="text"
@@ -115,11 +125,11 @@ export default function PublishArticle() {
             <FilePond
               files={media}
               onupdatefiles={setMedia}
-              allowMultiple={true}
-              acceptedFileTypes={["video/*", "image/*"]}
+              allowMultiple={false}
+              acceptedFileTypes={["image/*"]}
               allowFileTypeValidation={true}
               name="file"
-              labelIdle='Upload image/videos or <span className="filepond--label-action">Browse</span>'
+              labelIdle='Upload image or <span className="filepond--label-action">Browse</span>'
               required
             />
           </div>
