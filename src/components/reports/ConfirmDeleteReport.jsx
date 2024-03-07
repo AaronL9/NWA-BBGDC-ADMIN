@@ -10,9 +10,12 @@ import DialogContentText from "@mui/material/DialogContentText";
 import DialogTitle from "@mui/material/DialogTitle";
 import Slide from "@mui/material/Slide";
 import { useNavigate } from "react-router-dom";
-import { deleteDoc, doc } from "firebase/firestore";
-import { db } from "../../config/firebase";
 import CustomizedSnackbars from "../global/snackbar/CustomizedSnackbars";
+
+// firebase
+import { deleteDoc, doc } from "firebase/firestore";
+import { db, storage } from "../../config/firebase";
+import { deleteObject, listAll, ref } from "firebase/storage";
 
 const Transition = React.forwardRef(function Transition(props, ref) {
   return <Slide direction="up" ref={ref} {...props} />;
@@ -36,7 +39,18 @@ export default function ConfirmDeleteReport({ docID }) {
   const handleConfirm = async () => {
     try {
       setLoading(true);
+
       await deleteDoc(doc(db, "reports", docID));
+
+      const listRef = ref(storage, `reports/${docID}`);
+      const listResult = await listAll(listRef);
+      await Promise.all(
+        listResult.items.map(async (itemRef) => {
+          await deleteObject(itemRef);
+          console.log(`Deleted file: ${itemRef.name}`);
+        })
+      );
+
       setTimeout(() => {
         setLoading(false);
         setOpen(false);

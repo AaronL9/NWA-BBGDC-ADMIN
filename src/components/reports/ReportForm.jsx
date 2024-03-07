@@ -7,18 +7,61 @@ import DoneIcon from "@mui/icons-material/Done";
 import StatusMenu from "./StatusMenu.jsx";
 import ConfirmDeleteReport from "./ConfirmDeleteReport.jsx";
 
+// firebase
+import { db } from "../../config/firebase";
+import { doc, updateDoc } from "firebase/firestore";
+import Spinner from "../global/spinner/Spinner.jsx";
+import CustomizedSnackbars from "../global/snackbar/CustomizedSnackbars.jsx";
+
 export default function ReportForm({ data, onChangeHandler }) {
   const [isDisabled, setIsDisabled] = useState(true);
 
+  const [loading, setLoading] = useState(false);
+  const [showSnackbar, setShowSnackbar] = useState(false);
+
+  async function onUpdate() {
+    try {
+      setLoading(true);
+      if (!isDisabled) {
+        await updateDoc(doc(db, "reports", data.docID), {
+          description: data.description,
+          location: data.location,
+        });
+        setShowSnackbar(true);
+      }
+    } catch (error) {
+      alert(error.message);
+    } finally {
+      setIsDisabled((prev) => !prev);
+      setLoading(false);
+    }
+  }
+
   return (
     <>
+      <CustomizedSnackbars
+        message="Success! The report has been updated."
+        setShow={setShowSnackbar}
+        show={showSnackbar}
+        severity="success"
+        position={{ vertical: "top", horizontal: "center" }}
+      />
+      {loading && (
+        <div className="loader-overlay">
+          <Spinner />
+        </div>
+      )}
       <h2>REPORT</h2>
       <form className="report-form">
         <table>
           <caption className="report-form__captions">
             <div className="report-form__status">
               <span>STATUS:</span>
-              <StatusMenu status={data.status} docID={data.docID} />
+              <StatusMenu
+                data={data}
+                onChangeHandler={onChangeHandler}
+                docID={data.docID}
+              />
             </div>
             <div className="report-form__controlls">
               <LoadingButton
@@ -26,7 +69,7 @@ export default function ReportForm({ data, onChangeHandler }) {
                 startIcon={isDisabled ? <EditIcon /> : <DoneIcon />}
                 sx={{ marginLeft: "auto" }}
                 color="inherit"
-                onClick={() => setIsDisabled((prev) => !prev)}
+                onClick={onUpdate}
               >
                 {isDisabled ? "edit" : "done"}
               </LoadingButton>
@@ -45,7 +88,7 @@ export default function ReportForm({ data, onChangeHandler }) {
                       value={data.offense}
                       name="offense"
                       onChange={onChangeHandler}
-                      disabled={isDisabled}
+                      disabled={true}
                     />
                   </div>
                   <div>
@@ -56,7 +99,7 @@ export default function ReportForm({ data, onChangeHandler }) {
                       value={data.reporteeName}
                       name="reporteeName"
                       onChange={onChangeHandler}
-                      disabled={isDisabled}
+                      disabled={true}
                     />
                   </div>
                 </section>
@@ -70,7 +113,7 @@ export default function ReportForm({ data, onChangeHandler }) {
                   type="datetime-local"
                   name="date"
                   value={toDateTime(data.timestamp)}
-                  disabled={isDisabled}
+                  disabled={true}
                 />
               </td>
             </tr>
@@ -82,7 +125,9 @@ export default function ReportForm({ data, onChangeHandler }) {
                     type="text"
                     name="location"
                     value={data.location}
-                    onChange={onChangeHandler}
+                    onChange={(e) =>
+                      onChangeHandler("location", e.target.value)
+                    }
                     disabled={isDisabled}
                   />
                 </div>
@@ -97,7 +142,9 @@ export default function ReportForm({ data, onChangeHandler }) {
                   id=""
                   rows="5"
                   value={data.description}
-                  onChange={onChangeHandler}
+                  onChange={(e) =>
+                    onChangeHandler("description", e.target.value)
+                  }
                   disabled={isDisabled}
                 ></textarea>
               </td>

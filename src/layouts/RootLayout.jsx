@@ -46,7 +46,7 @@ export default function RootLayout() {
   }, [admin]);
 
   return (
-    <>
+    <div id="root-home">
       <header className={isOpen ? "banner move-right" : "banner"}>
         <div className="banner__upper">
           <h1 className="banner__name">
@@ -74,6 +74,6 @@ export default function RootLayout() {
           </div>
         </div>
       </footer>
-    </>
+    </div>
   );
 }

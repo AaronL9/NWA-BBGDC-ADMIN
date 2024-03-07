@@ -28,13 +28,13 @@ body {
   font-family: "Poppins", sans-serif;
   background-color: #f5f5f5;
   background-color: #f0f2f5;
-  padding-left: 78px;
 }
 
-#root {
+#root-home {
   display: flex;
   flex-direction: column;
   height: 100vh;
+  padding-left: 78px;
 }
 
 main {

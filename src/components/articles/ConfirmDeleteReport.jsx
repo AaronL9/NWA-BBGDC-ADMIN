@@ -9,9 +9,12 @@ import DialogContentText from "@mui/material/DialogContentText";
 import DialogTitle from "@mui/material/DialogTitle";
 import Slide from "@mui/material/Slide";
 import { useNavigate } from "react-router-dom";
-import { deleteDoc, doc } from "firebase/firestore";
-import { db } from "../../config/firebase";
 import CustomizedSnackbars from "../global/snackbar/CustomizedSnackbars";
+
+// firebase
+import { deleteDoc, doc } from "firebase/firestore";
+import { deleteObject, ref } from "firebase/storage";
+import { db, storage } from "../../config/firebase";
 
 const Transition = React.forwardRef(function Transition(props, ref) {
   return <Slide direction="up" ref={ref} {...props} />;
@@ -35,7 +38,10 @@ export default function ConfirmDeleteNews({ docID, setLoading }) {
     setOpen(false);
     try {
       setLoading(true);
+
       await deleteDoc(doc(db, "news", docID));
+      await deleteObject(ref(storage, `news/${docID}/news_image`));
+
       setTimeout(() => {
         setLoading(false);
         navigate("/news");

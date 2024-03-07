@@ -21,6 +21,10 @@ export default function ReportView() {
   const [loading, setLoading] = useState(false);
   const authCtx = useContext(AuthContext);
 
+  function onChangeHandler(key, value) {
+    setDetails((prev) => ({ ...prev, [key]: value }));
+  }
+
   const assignToAllPatrollers = async () => {
     setLoading(true);
     try {
@@ -29,22 +33,17 @@ export default function ReportView() {
         coords: details.geoPoint,
         location: details.location,
       });
-      const response = await fetch(
-        `${import.meta.env.VITE_API_ENDPOINT}/api/push/alert`,
-        {
-          method: "GET",
-          headers: {
-            Authorization: authCtx.admin.accessToken,
-          },
-        }
-      );
-      const json = await response.json();
-      if (!response.ok) {
-        console.log(json);
-      }
+
+      fetch(`${import.meta.env.VITE_API_ENDPOINT}/api/push/alert`, {
+        method: "GET",
+        headers: {
+          Authorization: authCtx.admin.accessToken,
+        },
+      });
+
       alert("This report location is live to patrollers");
     } catch (error) {
-      console.log(error);
+      alert(error.message);
     } finally {
       setLoading(false);
     }
@@ -71,15 +70,17 @@ export default function ReportView() {
         </div>
       ) : (
         <div className="report">
-          <ReportForm data={details} />
+          <ReportForm data={details} onChangeHandler={onChangeHandler} />
           <div className="report-form__actions">
-            <LoadingButton
-              loading={loading}
-              variant="contained"
-              onClick={assignToAllPatrollers}
-            >
-              Forward location to patrollers
-            </LoadingButton>
+            {details.status !== "resolved" && (
+              <LoadingButton
+                loading={loading}
+                variant="contained"
+                onClick={assignToAllPatrollers}
+              >
+                Forward location to patrollers
+              </LoadingButton>
+            )}
           </div>
           <h2>Images/Videos</h2>
           <div className="report-form__media">

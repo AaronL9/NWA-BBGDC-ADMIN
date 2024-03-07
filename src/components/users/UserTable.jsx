@@ -168,7 +168,6 @@ export default function UsersTable() {
           page: page,
         });
 
-        console.log(hits);
         setRows(hits);
         setTotalRows(nbHits);
       } catch (error) {
