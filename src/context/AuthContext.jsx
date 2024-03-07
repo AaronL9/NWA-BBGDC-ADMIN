@@ -2,7 +2,7 @@ import { createContext, useState, useEffect } from "react";
 import { signInWithEmailAndPassword, signOut } from "firebase/auth";
 import { auth } from "../config/firebase";
 import PropTypes from "prop-types";
-import { AuthErrorMessages } from "../util/authError.js";
+import { AuthErrorMessages } from "../util/AuthError";
 
 export const AuthContext = createContext({
   admin: null,
