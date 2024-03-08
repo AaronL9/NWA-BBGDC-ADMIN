@@ -32,6 +32,7 @@ export default function ReportView() {
       await setDoc(assignRef, {
         coords: details.geoPoint,
         location: details.location,
+        offense: details.offense,
       });
 
       fetch(`${import.meta.env.VITE_API_ENDPOINT}/api/push/alert`, {
