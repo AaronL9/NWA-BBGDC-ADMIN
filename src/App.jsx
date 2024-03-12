@@ -24,12 +24,15 @@ import PatrollerNavigation from "./pages/patrollers/PatrollerNavigation.jsx";
 import GroupChat from "./pages/patrollers/Tabs/GroupChat.jsx";
 import AllLocation from "./pages/patrollers/Tabs/AllLocation.jsx";
 import Users from "./pages/users/Users.jsx";
+import Profile from "./pages/Profile/Profile.jsx";
+import ForgotPassword from "./pages/auth/ForgotPassword.jsx";
 
 const router = createBrowserRouter(
   createRoutesFromElements(
     <>
       <Route element={<Gate />}>
         <Route path="/" element={<Login />}></Route>
+        <Route path="/forgot-password" element={<ForgotPassword />}></Route>
       </Route>
       <Route element={<Authorization />}>
         <Route path="/" element={<RootLayout />}>
@@ -51,6 +54,7 @@ const router = createBrowserRouter(
             element={<PatrollerLocation />}
           />
           <Route path="users" element={<Users />} />
+          <Route path="profile" element={<Profile />} />
         </Route>
       </Route>
     </>

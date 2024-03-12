@@ -13,7 +13,12 @@ export default function AdminDashboard() {
     const fetchReportMarker = async () => {
       const collectionRef = collection(db, "reports");
       const snapshot = await getDocs(collectionRef);
-      setMarkers(snapshot.docs.map((doc) => doc.data().geoPoint));
+      setMarkers(
+        snapshot.docs.map((doc) => ({
+          coords: doc.data().geoPoint,
+          offense: doc.data().offense,
+        }))
+      );
     };
     fetchReportMarker();
   }, []);

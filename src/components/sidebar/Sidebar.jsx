@@ -1,4 +1,4 @@
-import { NavLink } from "react-router-dom";
+import { NavLink, useNavigate } from "react-router-dom";
 import PropTypes from "prop-types";
 
 import { navListData } from "./sidebar_data";
@@ -18,7 +18,9 @@ function NavItem({ name, iconClass, path }) {
 }
 
 export default function Sidebar({ setIsOpen }) {
-  const { logout } = useAuthContext();
+  const { logout, admin } = useAuthContext();
+  const navigate = useNavigate();
+
   const toggleSidebar = () => {
     const sidebar = document.querySelector(".sidebar");
     const closeBtn = document.querySelector("#btn");
@@ -35,6 +37,26 @@ export default function Sidebar({ setIsOpen }) {
         closeBtn.classList.replace("bx-menu-alt-right", "bx-menu");
       }
     }
+  };
+
+  const onProfileClick = () => {
+    const sidebar = document.querySelector(".sidebar");
+    const closeBtn = document.querySelector("#btn");
+    // const searchBtn = document.querySelector(".bx-search");
+
+    sidebar.classList.toggle("open");
+    setIsOpen((prev) => !prev);
+    menuBtnChange();
+
+    function menuBtnChange() {
+      if (sidebar.classList.contains("open")) {
+        closeBtn.classList.replace("bx-menu", "bx-menu-alt-right");
+      } else {
+        closeBtn.classList.replace("bx-menu-alt-right", "bx-menu");
+      }
+    }
+
+    navigate("profile");
   };
 
   function logoutHanlder() {
@@ -59,8 +81,11 @@ export default function Sidebar({ setIsOpen }) {
           />
         ))}
         <li className="profile">
-          <div className="profile-details">
-            <img src="/images/profile.webp" alt="profileImg" />
+          <div className="profile-details" onClick={onProfileClick}>
+            <img
+              src={admin?.photoURL ?? "/images/profile-circle.png"}
+              alt="profileImg"
+            />
             <div className="name_job">
               <div className="name">Aaron Lomibao</div>
               <div className="job">Admin</div>

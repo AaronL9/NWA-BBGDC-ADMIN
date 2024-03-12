@@ -1,0 +1,20 @@
+.profile-dashboard {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-direction: column;
+  gap: 3rem;
+}
+
+.profile-dashboard__profile-pic {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+}
+
+.profile-dashboard__fields {
+  display: flex;
+  gap: 1rem;
+  flex-direction: column;
+}

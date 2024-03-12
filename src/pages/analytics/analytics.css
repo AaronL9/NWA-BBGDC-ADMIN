@@ -19,3 +19,8 @@
   margin-top: 5rem;
   padding: 2rem;
 }
+
+.analytics__area-button {
+  display: flex;
+  justify-content: center;
+}

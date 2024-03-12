@@ -25,8 +25,10 @@ export default function StatusMenu({ data, onChangeHandler, docID }) {
 
       const reportRef = doc(db, "reports", docID);
       await updateDoc(reportRef, { status: value });
-      if (value === "resolved")
+
+      if (value === "resolved") {
         await deleteDoc(doc(db, "live_location", docID));
+      }
     } catch (error) {
       alert(error.message);
     } finally {

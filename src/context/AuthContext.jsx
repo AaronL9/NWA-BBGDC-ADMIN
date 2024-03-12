@@ -1,8 +1,9 @@
 import { createContext, useState, useEffect } from "react";
 import { signInWithEmailAndPassword, signOut } from "firebase/auth";
-import { auth } from "../config/firebase";
+import { auth, db } from "../config/firebase";
 import PropTypes from "prop-types";
 import { AuthErrorMessages } from "../util/AuthError";
+import { doc, getDoc } from "firebase/firestore";
 
 export const AuthContext = createContext({
   admin: null,
@@ -10,10 +11,14 @@ export const AuthContext = createContext({
   logout: () => {},
   authenticating: false,
   authError: null,
+  adminData: "",
+  setAdminData: () => {},
+  setAuthError: () => {},
 });
 
 export function AuthContextProvider({ children }) {
   const [admin, setAdmin] = useState(null);
+  const [adminData, setAdminData] = useState(null);
   const [loading, setLoading] = useState(true);
   const [authenticating, setAuthenticating] = useState(false);
   const [authError, setAuthError] = useState(null);
@@ -44,6 +49,11 @@ export function AuthContextProvider({ children }) {
           if (token?.claims?.admin) {
             setAdmin(user);
             setAuthError(null);
+
+            const docRef = doc(db, "admins", user.uid);
+            const docSnap = await getDoc(docRef);
+
+            setAdminData(docSnap.data());
           } else {
             logout();
             setAdmin(null);
@@ -65,6 +75,9 @@ export function AuthContextProvider({ children }) {
     logout,
     authenticating,
     authError,
+    adminData,
+    setAdminData,
+    setAuthError,
   };
 
   return (

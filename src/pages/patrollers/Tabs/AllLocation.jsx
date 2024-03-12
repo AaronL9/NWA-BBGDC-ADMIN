@@ -29,6 +29,7 @@ export default function AllLocation() {
           zoom={14}
           center={{ lat: 16.071917235901985, lng: 120.3400965898522 }}
           gestureHandling={"cooperative"}
+          mapTypeId="satellite"
         >
           {patrollersLocation.map((coords, index) => (
             <Marker key={index} position={coords} />
