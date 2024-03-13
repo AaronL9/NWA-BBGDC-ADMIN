@@ -11,7 +11,6 @@ export default function Analytics() {
   const [data, setData] = useState([]);
 
   useEffect(() => {
-    console.log("hello");
     const fetchData = async () => {
       const querySnapshot = await getDocs(
         collection(db, "report_analytics", category, "report_type")
@@ -32,9 +31,6 @@ export default function Analytics() {
         <CategoryButton setCategory={setCategory} />
       </div>
       <br />
-      {/* <div className="analytics-container">
-        <BarsDataset />
-      </div> */}
     </div>
   );
 }

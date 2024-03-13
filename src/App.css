@@ -102,9 +102,20 @@
   }
 }
 
-@media (max-width: 485px) {
+@media (max-width: 500px) {
   .banner {
     padding-inline: 0;
     margin-inline: 0;
+  }
+}
+
+@media (max-width: 500px) {
+  .banner__logo {
+    display: none;
+  }
+  .banner__name {
+    font-size: 1rem;
+    padding-right: 1rem;
+    margin-left: auto;
   }
 }

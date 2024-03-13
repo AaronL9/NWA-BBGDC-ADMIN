@@ -63,6 +63,7 @@ export default function RootLayout() {
         </div>
       </header>
       <Sidebar setIsOpen={setIsOpen} />
+      {/* <ResponsiveDrawer /> */}
       <main className={isOpen ? "move-right" : null}>
         <Outlet />
       </main>
