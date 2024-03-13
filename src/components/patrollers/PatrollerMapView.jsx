@@ -4,10 +4,39 @@ import {
   Map,
   AdvancedMarker,
   Pin,
+  useAdvancedMarkerRef,
+  InfoWindow,
 } from "@vis.gl/react-google-maps";
 import { useEffect, useState } from "react";
 import { collection, getDocs } from "firebase/firestore";
 import { db } from "../../config/firebase";
+import { Link } from "react-router-dom";
+
+const CustomMarker = ({ data }) => {
+  const [showInforWindow, setShowInfoWindow] = useState(false);
+  const [markerRef, marker] = useAdvancedMarkerRef();
+
+  return (
+    <AdvancedMarker
+      position={data.coords}
+      onClick={() => setShowInfoWindow((prev) => !prev)}
+      ref={markerRef}
+    >
+      <Pin background={"red"} glyphColor={"#fff"} borderColor={"#fff"}></Pin>
+      {showInforWindow && (
+        <InfoWindow
+          onCloseClick={() => setShowInfoWindow(false)}
+          anchor={marker}
+          pixelOffset={50}
+        >
+          <h3 style={{ textTransform: "capitalize" }}>{data.label}</h3>
+
+          <Link to={`/reports/${data.id}`}>View</Link>
+        </InfoWindow>
+      )}
+    </AdvancedMarker>
+  );
+};
 
 export default function PatrollerMapView({ coords }) {
   const [reportedLocation, setReportedLocation] = useState([]);
@@ -15,7 +44,7 @@ export default function PatrollerMapView({ coords }) {
   useEffect(() => {
     const getReportedLocation = async () => {
       const snapshot = await getDocs(collection(db, "live_location"));
-      const data = snapshot.docs.map((doc) => doc.data());
+      const data = snapshot.docs.map((doc) => ({ id: doc.id, ...doc.data() }));
       setReportedLocation(data);
     };
     getReportedLocation();
@@ -37,10 +66,15 @@ export default function PatrollerMapView({ coords }) {
             borderColor={"#fff"}
           />
         </AdvancedMarker>
-        {reportedLocation.map((location, index) => (
-          <AdvancedMarker key={index} position={location.coords}>
-            <Pin background={"red"} glyphColor={"#fff"} borderColor={"#fff"} />
-          </AdvancedMarker>
+        {reportedLocation.map((location) => (
+          <CustomMarker
+            key={location.id}
+            data={{
+              coords: location.coords,
+              id: location.id,
+              label: location.offense,
+            }}
+          />
         ))}
       </Map>
     </APIProvider>
@@ -49,4 +83,10 @@ export default function PatrollerMapView({ coords }) {
 
 PatrollerMapView.propTypes = {
   coords: PropType.object,
+};
+
+CustomMarker.propTypes = {
+  data: PropType.object,
+  pinStyle: PropType.object,
+  isPatroller: PropType.bool,
 };

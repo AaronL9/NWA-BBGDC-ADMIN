@@ -4,7 +4,6 @@ import { doc, onSnapshot } from "firebase/firestore";
 import { db } from "../../config/firebase";
 import PatrollerProfileCard from "../../components/patrollers/PatrollerProfileCard";
 import Spinner from "../../components/global/spinner/Spinner";
-// import MemoizedMapView from "../../components/maps/MemoizedMapView";
 import PatrollerMapView from "../../components/patrollers/PatrollerMapView.jsx";
 
 export default function PatrollerLocation() {

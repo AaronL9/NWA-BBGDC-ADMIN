@@ -12,6 +12,7 @@ import { db } from "../../../config/firebase";
 import PropType from "prop-types";
 import IconButton from "@mui/material/IconButton";
 import RefreshIcon from "@mui/icons-material/Refresh";
+import { Link } from "react-router-dom";
 
 const CustomMarker = ({ data, pinStyle }) => {
   const [showInforWindow, setShowInfoWindow] = useState(false);
@@ -31,6 +32,7 @@ const CustomMarker = ({ data, pinStyle }) => {
           pixelOffset={50}
         >
           <h3 style={{ textTransform: "capitalize" }}>{data.label}</h3>
+          {data?.path && <Link to={data.path}>View</Link>}
         </InfoWindow>
       )}
     </AdvancedMarker>
@@ -55,6 +57,7 @@ export default function AllLocation() {
         .map((doc) => {
           const data = doc.data();
           return {
+            id: doc.id,
             coords: data.patrollerLocation,
             patrollerName: `${data.firstName} ${data.lastName}`,
           };
@@ -64,7 +67,10 @@ export default function AllLocation() {
     };
     const fetchReportedLocation = async () => {
       const querySnapshot = await getDocs(collection(db, "live_location"));
-      const data = querySnapshot.docs.map((doc) => doc.data());
+      const data = querySnapshot.docs.map((doc) => ({
+        id: doc.id,
+        ...doc.data(),
+      }));
       setReportedLocation(data);
     };
 
@@ -90,10 +96,13 @@ export default function AllLocation() {
           mapTypeId="satellite"
           mapId={import.meta.env.VITE_MAP_ID}
         >
-          {patrollersLocation.map((data, index) => (
+          {patrollersLocation.map((data) => (
             <CustomMarker
-              key={index}
-              data={{ coords: data.coords, label: data.patrollerName }}
+              key={data.id}
+              data={{
+                coords: data.coords,
+                label: data.patrollerName,
+              }}
               pinStyle={{
                 background: "#021fb3",
                 glyphColor: "#fff",
@@ -101,10 +110,14 @@ export default function AllLocation() {
               }}
             />
           ))}
-          {reportedLocation.map((location, index) => (
+          {reportedLocation.map((location) => (
             <CustomMarker
-              key={index}
-              data={{ coords: location.coords, label: location.offense }}
+              key={location.id}
+              data={{
+                coords: location.coords,
+                label: location.offense,
+                path: `/reports/${location.id}`,
+              }}
               pinStyle={{
                 background: "red",
                 glyphColor: "#fff",

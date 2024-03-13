@@ -89,6 +89,7 @@ export default function ReportForm({ data, onChangeHandler }) {
                       name="offense"
                       onChange={onChangeHandler}
                       disabled={true}
+                      style={{ textTransform: "capitalize" }}
                     />
                   </div>
                   <div>
