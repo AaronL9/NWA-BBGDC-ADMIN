@@ -8,11 +8,13 @@ export default function ReportMedia({ url }) {
   return (
     <div className="report-form__image-wrapper">
       {isImageLoading && <ImageLoader />}
-      <img
-        className={isImageLoading ? "loading" : "loaded"}
-        src={url}
-        onLoad={() => setIsImageIsLoading(false)}
-      />
+      <a href={url} target="_blank" rel="noreferrer">
+        <img
+          className={isImageLoading ? "loading" : "loaded"}
+          src={url}
+          onLoad={() => setIsImageIsLoading(false)}
+        />
+      </a>
     </div>
   );
 }

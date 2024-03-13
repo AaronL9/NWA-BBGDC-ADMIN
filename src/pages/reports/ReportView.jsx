@@ -88,6 +88,11 @@ export default function ReportView() {
             {details.imageURL.map((url, index) => (
               <ReportMedia key={index} url={url} />
             ))}
+            {details?.videoURL.length !== 0 && (
+              <video width="250" height="150" controls>
+                <source src={details.videoURL[0]} type="video/mp4" />
+              </video>
+            )}
           </div>
           {details && (
             <div className="report__map">
