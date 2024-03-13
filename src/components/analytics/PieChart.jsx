@@ -1,15 +1,6 @@
 import { PieChart, pieArcLabelClasses } from "@mui/x-charts/PieChart";
 import PropTypes from "prop-types";
 
-// const data = [
-//   { label: "Noise Disturbance", value: 20, color: "#0088FE" },
-//   { label: "Robbery", value: 100, color: "#00C49F" },
-//   { label: "Complaints", value: 300, color: "#FFBB28" },
-//   { label: "Concern", value: 200, color: "#FF8042" },
-//   { label: "Missing Person/s", value: 150 },
-//   { label: "Sexual Harrasment", value: 125 },
-// ];
-
 const sizing = {
   margin: { right: 5, top: 50 },
   width: 800,

@@ -76,3 +76,14 @@
   text-align: center;
   font-family: Arial, sans-serif;
 }
+
+@media (max-width: 860px) {
+  .reports__cards-container {
+    width: 100%;
+  }
+}
+@media (max-width: 570px) {
+  .reports {
+    padding-inline: 0;
+  }
+}

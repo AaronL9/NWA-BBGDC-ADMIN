@@ -67,7 +67,6 @@ export default function Sidebar({ setIsOpen }) {
     <div className="sidebar">
       <div className="logo-details">
         <i className="bx bxs-analyse icon"></i>
-        {/* <img className="logo icon" src="/images/barangayhall.png" /> */}
         <div className="logo_name">Neighborhood</div>
         <i className="bx bx-menu" id="btn" onClick={toggleSidebar}></i>
       </div>

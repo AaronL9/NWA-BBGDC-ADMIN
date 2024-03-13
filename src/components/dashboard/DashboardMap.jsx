@@ -8,7 +8,7 @@ import {
   useAdvancedMarkerRef,
 } from "@vis.gl/react-google-maps";
 import { useState } from "react";
-import { mapStyles } from "./styles";
+import { Link } from "react-router-dom";
 
 const CustomMarker = ({ data }) => {
   const [showInforWindow, setShowInfoWindow] = useState(false);
@@ -21,7 +21,9 @@ const CustomMarker = ({ data }) => {
       ref={markerRef}
     >
       <Pin background="none" borderColor="none" glyphColor="none">
-        <img src="/images/point.png" alt="" />
+        <div
+          className={`dashboard-map_pin-point pin-point-${data.status}`}
+        ></div>
       </Pin>
       {showInforWindow && (
         <InfoWindow
@@ -29,7 +31,9 @@ const CustomMarker = ({ data }) => {
           anchor={marker}
           pixelOffset={50}
         >
-          {data.offense}
+          <h3 style={{ textTransform: "capitalize" }}>{data.offense}</h3>
+          <p>{data.date}</p>
+          <Link to={`/reports/${data.id}`}>View</Link>
         </InfoWindow>
       )}
     </AdvancedMarker>
@@ -46,7 +50,6 @@ export default function DashboardMap({ markers }) {
         mapTypeId="hybrid"
         style={{ borderRadius: "8px", height: "500px" }}
         mapId={import.meta.env.VITE_MAP_ID}
-        styles={mapStyles}
       >
         {markers.map((data, index) => (
           <CustomMarker key={index} data={data} />

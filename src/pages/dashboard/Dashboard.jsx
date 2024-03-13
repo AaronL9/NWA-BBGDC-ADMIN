@@ -15,8 +15,11 @@ export default function AdminDashboard() {
       const snapshot = await getDocs(collectionRef);
       setMarkers(
         snapshot.docs.map((doc) => ({
+          id: doc.id,
           coords: doc.data().geoPoint,
           offense: doc.data().offense,
+          date: doc.data().date,
+          status: doc.data().status,
         }))
       );
     };
@@ -43,7 +46,30 @@ export default function AdminDashboard() {
           </div>
         </div>
         <div className="dashboard-analytics">
-          <h2 className="dashboard-map__title">Geographic Information</h2>
+          <div
+            style={{
+              display: "flex",
+              justifyContent: "space-between",
+              alignItems: "center",
+              flexWrap: "wrap",
+            }}
+          >
+            <h2 className="dashboard-map__title">Geographic Information</h2>
+            <ul style={{ display: "flex", gap: 8, flexWrap: "wrap" }}>
+              <li style={{ display: "flex", alignItems: "center", gap: 4 }}>
+                <div className="dashboard-map_pin-point pin-point-report"></div>
+                <span>Report</span>
+              </li>
+              <li style={{ display: "flex", alignItems: "center", gap: 4 }}>
+                <div className="dashboard-map_pin-point pin-point-ongoing"></div>
+                <span>Ongoing</span>
+              </li>
+              <li style={{ display: "flex", alignItems: "center", gap: 4 }}>
+                <div className="dashboard-map_pin-point pin-point-resolved"></div>
+                <span>Resolved</span>
+              </li>
+            </ul>
+          </div>
           <DashboardMap markers={markers} />
         </div>
       </div>

@@ -3,8 +3,9 @@ import Box from "@mui/material/Box";
 import Tabs from "@mui/material/Tabs";
 import Tab from "@mui/material/Tab";
 import { useState } from "react";
-import { useNavigate, Outlet } from "react-router-dom";
+import { useNavigate, Outlet, useLocation } from "react-router-dom";
 import "./patrollers.css";
+import { defaultTab } from "../../util/tabFilter";
 
 function samePageLinkNavigation(event) {
   if (
@@ -42,11 +43,11 @@ LinkTab.propTypes = {
 
 export default function PatrollerNavigation() {
   const navigate = useNavigate();
-  const [value, setValue] = useState(0);
+  const { pathname } = useLocation();
+  const [value, setValue] = useState(defaultTab(pathname));
 
   const handleChange = (event, newValue) => {
     // event.type can be equal to focus with selectionFollowsFocus.
-    console.log(newValue);
     if (
       event.type !== "click" ||
       (event.type === "click" && samePageLinkNavigation(event))

@@ -17,11 +17,7 @@ export default function MapView({ coords }) {
         mapId={import.meta.env.VITE_MAP_ID}
       >
         <AdvancedMarker position={coords}>
-          <Pin
-            background={"#0469FB"}
-            glyphColor={"#000"}
-            borderColor={"#000"}
-          />
+          <Pin />
         </AdvancedMarker>
       </Map>
     </APIProvider>

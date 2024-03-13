@@ -1,4 +1,8 @@
-.publish {
+.publish__editor {
+  width: 100%;
+}
+
+/* .publish {
   display: flex;
   width: 90%;
   max-width: 1500px;
@@ -19,10 +23,6 @@
   align-items: center;
   width: 100%;
 }
-
-/* .publish_image-upload {
-  
-} */
 .publish__description {
   width: 500px;
   margin-bottom: 3rem;
@@ -44,9 +44,7 @@
   box-shadow: 0px 1px 4px 0px rgba(0, 0, 0, 0.25);
 }
 
-.publish__editor {
-  width: 100%;
-}
+
 
 .publish__btn {
   display: inline-flex;
@@ -71,4 +69,4 @@
 
 .filepond--credits {
   display: none !important;
-}
+} */

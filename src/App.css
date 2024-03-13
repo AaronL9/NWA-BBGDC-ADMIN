@@ -89,3 +89,22 @@
 .global-loader {
   background: none;
 }
+
+@media (max-width: 998px) {
+  .banner__text {
+    display: none;
+  }
+}
+
+@media (max-width: 704px) {
+  .banner__name {
+    font-size: 1.15rem;
+  }
+}
+
+@media (max-width: 485px) {
+  .banner {
+    padding-inline: 0;
+    margin-inline: 0;
+  }
+}

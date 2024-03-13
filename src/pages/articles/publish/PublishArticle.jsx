@@ -118,6 +118,7 @@ export default function PublishArticle() {
               onChange={setBody}
               formats={formats}
               modules={modules}
+              style={{ width: "100%" }}
             />
             <div className="publish_image-upload"></div>
           </div>

@@ -144,6 +144,8 @@ function EnhancedTableToolbar({
         pr: { xs: 1, sm: 1 },
         backgroundColor: "white",
         justifyContent: "space-between",
+        flexWrap: "wrap",
+        paddingBlock: "0.5rem",
       }}
     >
       <Search>
@@ -173,23 +175,26 @@ function EnhancedTableToolbar({
           alignItems: "center",
           gap: "8px",
           paddingBlock: "8px",
+          flexWrap: "wrap",
         }}
       >
         <Typography variant="subtitle1">
           <span style={{ fontWeight: "bold" }}>Filter By:</span>
         </Typography>
-        <FilterMenu
-          values={yearOptions}
-          setFilterValue={setYear}
-          filterValue={year}
-          label="Year"
-        />
-        <FilterMenu
-          values={statusOptions}
-          setFilterValue={setStatus}
-          filterValue={status}
-          label="Status"
-        />
+        <div style={{ display: "flex", gap: "8px", flexWrap: "wrap" }}>
+          <FilterMenu
+            values={yearOptions}
+            setFilterValue={setYear}
+            filterValue={year}
+            label="Year"
+          />
+          <FilterMenu
+            values={statusOptions}
+            setFilterValue={setStatus}
+            filterValue={status}
+            label="Status"
+          />
+        </div>
       </div>
     </Toolbar>
   );

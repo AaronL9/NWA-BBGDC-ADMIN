@@ -179,3 +179,9 @@
 .patroller__chat-container:hover .patroller__chat-footer {
   display: inline;
 }
+
+/* ===== PATROLLER MAP ===== */
+.all-patroller-location {
+  display: flex;
+  flex-direction: column;
+}

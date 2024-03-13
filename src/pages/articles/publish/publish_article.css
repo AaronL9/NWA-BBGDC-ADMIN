@@ -1,4 +1,4 @@
-.publish {
+/* .publish {
   display: flex;
   width: 90%;
   max-width: 1500px;
@@ -8,7 +8,7 @@
   box-shadow: 0px 1px 4px 0px rgba(0, 0, 0, 0.25);
   padding: 1rem 2rem;
   justify-content: center;
-}
+} */
 
 .publish__form {
   display: flex;
@@ -17,26 +17,33 @@
   justify-content: center;
   gap: 2rem;
   align-items: center;
-  width: 100%;
+}
+
+.publish__title {
+  width: min(500px, 95%);
+}
+
+.publish__title #title {
+  width: min(500px, 95%);
 }
 
 .quill-editing-area {
-  width: 800px;
+  width: 80%;
   height: 500px;
 }
 
 .publish__description {
-  width: 500px;
-  flex: 1;
+  width: min(500px, 95%);
   margin-bottom: 3rem;
 }
 
 .quill {
+  width: 80%;
   height: 300px;
 }
 
 .publish__form input {
-  width: 500px;
+  width: 100%;
   display: flex;
   padding: 0.75rem 1.25rem;
   align-items: center;
