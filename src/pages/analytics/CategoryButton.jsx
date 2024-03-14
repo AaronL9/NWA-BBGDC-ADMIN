@@ -21,6 +21,7 @@ export default function CategoryButton({ setCategory }) {
     const getData = async () => {
       const area = await getDoc(doc(db, "static_data", "area"));
       const data = area.data().options;
+      data.unshift("all");
       setBonuanArea(data);
       setArea(data[0]);
     };
