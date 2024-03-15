@@ -12,7 +12,14 @@ import { useContext, useState } from "react";
 import { styled } from "@mui/material/styles";
 import { AuthContext } from "../../context/AuthContext";
 import ChangeEmailDialog from "./components/ChangeEmailDialog";
-import { doc, updateDoc } from "firebase/firestore";
+import {
+  doc,
+  updateDoc,
+  getDocs,
+  collection,
+  where,
+  query,
+} from "firebase/firestore";
 import { auth, db, storage } from "../../config/firebase";
 import Spinner from "../../components/global/spinner/Spinner";
 import { sendEmailVerification, updateProfile } from "firebase/auth";
@@ -53,6 +60,16 @@ export default function Profile() {
 
         const imageUrl = await getDownloadURL(storageRef);
         await updateProfile(auth.currentUser, { photoURL: imageUrl });
+
+        const q = query(
+          collection(db, "rooms"),
+          where("admin.id", "==", admin.uid)
+        );
+        const rooms = await getDocs(q);
+        rooms.forEach(async (document) => {
+          const roomsRef = doc(db, "rooms", document.id);
+          await updateDoc(roomsRef, { adminAvatarURL: imageUrl });
+        });
 
         setPhotoURL(imageUrl);
       } catch (error) {
