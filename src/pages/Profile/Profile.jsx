@@ -68,7 +68,9 @@ export default function Profile() {
         const rooms = await getDocs(q);
         rooms.forEach(async (document) => {
           const roomsRef = doc(db, "rooms", document.id);
-          await updateDoc(roomsRef, { adminAvatarURL: imageUrl });
+          await updateDoc(roomsRef, {
+            adminAvatarURL: imageUrl,
+          });
         });
 
         setPhotoURL(imageUrl);

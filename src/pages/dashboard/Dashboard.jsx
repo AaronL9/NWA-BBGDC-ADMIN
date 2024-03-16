@@ -3,7 +3,7 @@ import DashboardCard from "../../components/dashboard/DashboardCard";
 import { AdminDashboardData } from "./dashboard_data";
 import DashboardMap from "../../components/dashboard/DashboardMap";
 import { useEffect, useState } from "react";
-import { collection, getDocs } from "firebase/firestore";
+import { collection, getDocs, query, where } from "firebase/firestore";
 import { db } from "../../config/firebase";
 
 export default function AdminDashboard() {
@@ -12,7 +12,11 @@ export default function AdminDashboard() {
   useEffect(() => {
     const fetchReportMarker = async () => {
       const collectionRef = collection(db, "reports");
-      const snapshot = await getDocs(collectionRef);
+      const q = query(
+        collectionRef,
+        where("status", "in", ["report", "ongoing"])
+      );
+      const snapshot = await getDocs(q);
       setMarkers(
         snapshot.docs.map((doc) => ({
           id: doc.id,
@@ -63,10 +67,6 @@ export default function AdminDashboard() {
               <li style={{ display: "flex", alignItems: "center", gap: 4 }}>
                 <div className="dashboard-map_pin-point pin-point-ongoing"></div>
                 <span>Ongoing</span>
-              </li>
-              <li style={{ display: "flex", alignItems: "center", gap: 4 }}>
-                <div className="dashboard-map_pin-point pin-point-resolved"></div>
-                <span>Resolved</span>
               </li>
             </ul>
           </div>

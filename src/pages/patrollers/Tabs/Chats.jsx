@@ -28,6 +28,7 @@ export default function Chats() {
         const data = querySnapshot.docs.map((doc) => ({
           docId: doc.id,
           patroller: doc.data().patroller,
+          avatarURL: doc.data()?.patrollerAvatarURL ?? false,
         }));
         setRooms(data);
         setLoading(false);
@@ -39,6 +40,8 @@ export default function Chats() {
 
     return () => unsubscribe();
   }, [admin.uid]);
+
+  console.log(admin);
 
   const navigatTo = (patroller, docId) => {
     localStorage.setItem("patrollerId", patroller.id);
@@ -60,7 +63,7 @@ export default function Chats() {
             info="Yes i can do it for you"
             onClick={() => navigatTo(data.patroller, data.docId)}
           >
-            <Avatar src={path} name="Lilly" />
+            <Avatar src={path} name="Aaron" />
           </Conversation>
         ))}
       </ConversationList>

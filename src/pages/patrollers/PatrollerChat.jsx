@@ -2,7 +2,7 @@ import { useState, useCallback, useEffect, useContext } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import { useAuthContext } from "../../hooks/useAuthContext.jsx";
 import { v4 as uuidv4 } from "uuid";
-import { serverTimestamp } from "firebase/firestore";
+import { serverTimestamp, updateDoc } from "firebase/firestore";
 
 // CHAT UI
 import "@chatscope/chat-ui-kit-styles/dist/default/styles.min.css";
@@ -68,6 +68,7 @@ export default function Patrollers() {
     const q = query(collectionRef, orderBy("createdAt", "asc"));
 
     const unsubscribe = onSnapshot(q, (querySnapshot) => {
+      updateDoc(doc(db, "rooms", roomId), { adminSeen: true });
       if (!querySnapshot.docs[0]?.data()?.createdAt) return;
       setMessages(
         querySnapshot.docs.map((doc) => {
@@ -81,7 +82,7 @@ export default function Patrollers() {
         })
       );
     });
-    return unsubscribe;
+    return () => unsubscribe();
   }, [admin.email, roomId, admin.uid]);
 
   const onSend = useCallback(async () => {
@@ -96,25 +97,17 @@ export default function Patrollers() {
         createdAt: serverTimestamp(),
       });
 
-      const response = await fetch(
-        `${import.meta.env.VITE_API_ENDPOINT}/api/push/chat-notification`,
-        {
-          method: "POST",
-          body: JSON.stringify({ patrollerId }),
-          headers: {
-            "Content-Type": "application/json",
-            Authorization: authCtx.admin.accessToken,
-          },
-        }
-      );
+      updateDoc(doc(db, "rooms", roomId), { patrollerSeen: false });
 
-      const json = await response.json();
-
-      if (!response.ok) {
-        console.log(json);
-      }
+      fetch(`${import.meta.env.VITE_API_ENDPOINT}/api/push/chat-notification`, {
+        method: "POST",
+        body: JSON.stringify({ patrollerId }),
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: authCtx.admin.accessToken,
+        },
+      });
     } catch (error) {
-      alert(error.message);
       console.log(error);
     }
   }, [inputMessage, roomId, authCtx.admin.accessToken, patrollerId]);

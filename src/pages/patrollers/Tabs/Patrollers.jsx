@@ -22,6 +22,7 @@ import { useNavigate } from "react-router-dom";
 import AddButton from "../../../components/global/add-button/AddButton";
 import PatrollerForm from "../../../components/patrollers/PatrollerForm";
 import Spinner from "../../../components/global/spinner/Spinner";
+import { ChatContext } from "../../../context/ChatContext.jsx";
 
 export default function Patrollers() {
   const [loading, setLoading] = useState(true);
@@ -33,6 +34,7 @@ export default function Patrollers() {
 
   const navigate = useNavigate();
   const { admin } = useContext(AuthContext);
+  const { setAvatar } = useContext(ChatContext);
 
   const [rooms, setRooms] = useState([]);
 
@@ -57,7 +59,7 @@ export default function Patrollers() {
     );
 
     return () => unsubscribe();
-  }, [admin.uid]);
+  }, [admin.uid, setAvatar]);
 
   const navigatTo = (patroller, docId) => {
     localStorage.setItem("patrollerId", patroller.id);
@@ -85,11 +87,18 @@ export default function Patrollers() {
               <Conversation
                 key={data.docId}
                 name={data.patroller.displayName}
-                onClick={() => navigatTo(data.patroller, data.docId)}
-                info={data?.lastMessage?.message ?? ""}
+                onClick={() => {
+                  setAvatar(data.patrollerAvatarURL);
+                  navigatTo(data.patroller, data.docId);
+                }}
+                info={data?.lastMessage?.message ?? "You are now connected"}
                 lastSenderName={data?.lastMessage?.id === admin.uid && "You"}
+                unreadDot={!data?.adminSeen ?? false}
               >
-                <Avatar src={path} name="Lilly" />
+                <Avatar
+                  src={data.patrollerAvatarURL || path}
+                  name={data.patroller.displayName}
+                />
               </Conversation>
             ))}
           </ConversationList>
