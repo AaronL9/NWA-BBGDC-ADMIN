@@ -58,7 +58,7 @@ export default function AdminDashboard() {
               flexWrap: "wrap",
             }}
           >
-            <h2 className="dashboard-map__title">Geographic Information</h2>
+            <h2 className="dashboard-map__title">Report Mapping</h2>
             <ul style={{ display: "flex", gap: 8, flexWrap: "wrap" }}>
               <li style={{ display: "flex", alignItems: "center", gap: 4 }}>
                 <div className="dashboard-map_pin-point pin-point-report"></div>
