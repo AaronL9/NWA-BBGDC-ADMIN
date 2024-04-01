@@ -35,11 +35,13 @@ export default function ReportView() {
         offense: details.offense,
       });
 
-      fetch(`${import.meta.env.VITE_API_ENDPOINT}/api/push/alert`, {
-        method: "GET",
+      fetch(`http://localhost:3000/api/push/alert`, {
+        method: "POST",
         headers: {
+          "Content-Type": "application/json",
           Authorization: authCtx.admin.accessToken,
         },
+        body: JSON.stringify({ reportType: details.offense }),
       });
 
       alert("This report location is live to patrollers");
@@ -89,9 +91,14 @@ export default function ReportView() {
               <ReportMedia key={index} url={url} />
             ))}
             {details?.videoURL.length !== 0 && (
-              <video width="250" height="150" controls>
-                <source src={details.videoURL[0]} type="video/mp4" />
-              </video>
+              <a href={details.videoURL[0]} target="_blank" rel="noreferrer">
+                <img
+                  className={"loaded"}
+                  src={
+                    "https://awlights.com/wp-content/uploads/sites/31/2017/05/video-placeholder.png"
+                  }
+                />
+              </a>
             )}
           </div>
           {details && (
