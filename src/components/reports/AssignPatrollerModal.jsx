@@ -76,7 +76,7 @@ export default function AssignPatrollerModal({ fetchReport }) {
         responderId: data,
       });
 
-      fetch(`http://localhost:3000/api/push/alert`, {
+      fetch(`${import.meta.env.VITE_API_ENDPOINT}/api/push/alert`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
