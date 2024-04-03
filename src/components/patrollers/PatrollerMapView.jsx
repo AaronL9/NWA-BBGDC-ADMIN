@@ -60,7 +60,9 @@ export default function PatrollerMapView({ coords }) {
       const destination = `${reportedLocation[0].coords.lat},${reportedLocation[0].coords.lng}`;
 
       const response = await fetch(
-        `/maps/api/directions/json?origin=${origin}&destination=${destination}&key=AIzaSyD_1DfvG_eN5x0NYjLkm3aPRsm7sYk0Dz8`
+        `${
+          import.meta.env.VITE_DIRECTION_API_DOMAIN
+        }/maps/api/directions/json?origin=${origin}&destination=${destination}&key=AIzaSyD_1DfvG_eN5x0NYjLkm3aPRsm7sYk0Dz8`
       );
 
       const data = await response.json();
