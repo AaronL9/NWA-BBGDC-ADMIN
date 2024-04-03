@@ -4,7 +4,7 @@ import "./report_view.css";
 import "./reports.css";
 
 // firebase
-import { doc, getDoc, setDoc } from "firebase/firestore";
+import { doc, onSnapshot } from "firebase/firestore";
 import { db } from "../../config/firebase";
 
 // component
@@ -16,7 +16,6 @@ import { AuthContext } from "../../context/AuthContext";
 
 export default function ReportView() {
   const { id } = useParams();
-  const authCtx = useContext(AuthContext);
 
   const [details, setDetails] = useState();
   const [loading, setLoading] = useState(false);
@@ -24,33 +23,6 @@ export default function ReportView() {
   function onChangeHandler(key, value) {
     setDetails((prev) => ({ ...prev, [key]: value }));
   }
-
-  // const assignToAllPatrollers = async () => {
-  //   setLoading(true);
-  //   try {
-  //     const assignRef = doc(db, "live_location", id);
-  //     await setDoc(assignRef, {
-  //       coords: details.geoPoint,
-  //       location: details.location,
-  //       offense: details.offense,
-  //     });
-
-  //     fetch(`${import.meta.env.VITE_API_ENDPOINT}/api/push/alert`, {
-  //       method: "POST",
-  //       headers: {
-  //         "Content-Type": "application/json",
-  //         Authorization: authCtx.admin.accessToken,
-  //       },
-  //       body: JSON.stringify({ reportType: details.offense }),
-  //     });
-
-  //     alert("This report location is live to patrollers");
-  //   } catch (error) {
-  //     alert(error.message);
-  //   } finally {
-  //     setLoading(false);
-  //   }
-  // };
 
   async function fetchReport() {
     try {
@@ -63,8 +35,26 @@ export default function ReportView() {
     }
   }
 
+  // useEffect(() => {
+  //   fetchReport();
+  // }, [id]);
+
   useEffect(() => {
-    fetchReport();
+    const docRef = doc(db, "reports", id);
+
+    const unsubscribe = onSnapshot(docRef, (docSnap) => {
+      if (docSnap.exists()) {
+        setDetails({ ...docSnap.data(), docID: id });
+        console.log(docSnap.data());
+      } else {
+        console.log("Document does not exist.");
+        setDetails(null);
+      }
+    });
+
+    return () => {
+      unsubscribe();
+    };
   }, [id]);
 
   return (
