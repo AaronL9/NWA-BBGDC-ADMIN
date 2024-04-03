@@ -8,7 +8,11 @@ import TableHead from "@mui/material/TableHead";
 import TablePagination from "@mui/material/TablePagination";
 import TableRow from "@mui/material/TableRow";
 import { TableSortLabel, Toolbar, Typography } from "@mui/material";
-import { formatDateReport } from "../../util/dateFormatter";
+import {
+  formatDateReport,
+  formatDateString,
+  toDateTime,
+} from "../../util/dateFormatter";
 import { useNavigate } from "react-router-dom";
 import SearchIcon from "@mui/icons-material/Search";
 import { styled } from "@mui/material/styles";
@@ -20,6 +24,13 @@ import FilterMenu from "../../components/reports/FilterMenu.jsx";
 import { statusOptions, yearOptions } from "../../util/tableFilterLogic.js";
 import IconButton from "@mui/material/IconButton";
 import RefreshIcon from "@mui/icons-material/Refresh";
+
+import { DemoContainer } from "@mui/x-date-pickers/internals/demo";
+import { AdapterDateFns } from "@mui/x-date-pickers/AdapterDateFns";
+import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
+import { DatePicker } from "@mui/x-date-pickers/DatePicker";
+import ExportBtn from "../../components/reports/ExportBtn.jsx";
+import XLSX from "xlsx";
 
 const searchClient = algoliasearch(
   import.meta.env.VITE_ALGOLIA_APP_ID,
@@ -36,13 +47,13 @@ const defaultFilter = "status:report OR status:ongoing OR status:resolved";
 const columns = [
   {
     id: "reportee",
-    label: "Reportee",
+    label: "Complainant",
     minWidth: 170,
     styleClass: "MUI-table-cell-capitalize",
   },
   {
     id: "offense",
-    label: "Offense",
+    label: "Complaint",
     minWidth: 100,
     styleClass: "MUI-table-cell-capitalize",
   },
@@ -59,7 +70,7 @@ const columns = [
     align: "left",
   },
   {
-    id: "date",
+    id: "timestamp",
     label: "Date",
     minWidth: 100,
     align: "left",
@@ -136,6 +147,10 @@ function EnhancedTableToolbar({
   year,
   status,
   setRefresh,
+  setStartDate,
+  setEndDate,
+  startDate,
+  endDate,
 }) {
   return (
     <Toolbar
@@ -181,13 +196,38 @@ function EnhancedTableToolbar({
         <Typography variant="subtitle1">
           <span style={{ fontWeight: "bold" }}>Filter By:</span>
         </Typography>
-        <div style={{ display: "flex", gap: "8px", flexWrap: "wrap" }}>
-          <FilterMenu
+        <div
+          style={{
+            display: "flex",
+            gap: "8px",
+            flexWrap: "wrap",
+            alignItems: "center",
+          }}
+        >
+          <LocalizationProvider dateAdapter={AdapterDateFns}>
+            <DemoContainer components={["DatePicker"]} sx={{ width: 200 }}>
+              <DatePicker
+                label="Start Date"
+                value={startDate}
+                onChange={(value) => setStartDate(value.getTime())}
+              />
+            </DemoContainer>
+          </LocalizationProvider>
+          <LocalizationProvider dateAdapter={AdapterDateFns}>
+            <DemoContainer components={["DatePicker"]} sx={{ width: 200 }}>
+              <DatePicker
+                label="End Date"
+                value={endDate}
+                onChange={(value) => setEndDate(value.getTime())}
+              />
+            </DemoContainer>
+          </LocalizationProvider>
+          {/* <FilterMenu
             values={yearOptions}
             setFilterValue={setYear}
             filterValue={year}
             label="Year"
-          />
+          /> */}
           <FilterMenu
             values={statusOptions}
             setFilterValue={setStatus}
@@ -212,11 +252,16 @@ export default function ReportTable() {
   const [sortBy, setSortBy] = React.useState("date");
   const [order, setOrder] = React.useState("desc");
 
+  const [startDate, setStartDate] = React.useState(null);
+  const [endDate, setEndDate] = React.useState(null);
+
   const [status, setStatus] = React.useState(defaultFilter);
   const [year, setYear] = React.useState("");
   const [searchValue, setSearchValue] = React.useState("");
   const [query, setQuery] = React.useState("");
   const [refresh, setRefresh] = React.useState(true);
+
+  const [recordDateRange, setRecordDateRange] = React.useState("");
 
   const handleChangePage = async (event, newPage) => {
     setPage(newPage);
@@ -240,14 +285,26 @@ export default function ReportTable() {
       setLoading(true);
       const index = order === "desc" ? mainIndex : replicaIndex;
 
+      const dateRange =
+        startDate && endDate ? `timestamp:${startDate} TO ${endDate}` : "";
+
+      const validDate = startDate && endDate;
+      if (validDate && startDate > endDate) {
+        setStartDate(null);
+        setEndDate(null);
+        return alert("Invalid Date Range");
+      }
+
+      setRecordDateRange(dateRange);
       const { hits, nbHits } = await index.search(query, {
         hitsPerPage: rowsPerPage,
         page: page,
         filters: status,
-        numericFilters: year,
+        numericFilters: dateRange,
         cacheable: false,
       });
 
+      console.log(hits);
       setRows(hits);
       setTotalRows(nbHits);
     } catch (error) {
@@ -255,11 +312,58 @@ export default function ReportTable() {
     } finally {
       setLoading(false);
     }
-  }, [query, rowsPerPage, page, order, status, year]);
+  }, [query, rowsPerPage, page, order, status, year, startDate, endDate]);
 
   React.useEffect(() => {
     performSearch();
   }, [performSearch, refresh]);
+
+  React.useEffect(() => {
+    console.log(startDate, "TO", endDate);
+  }, [startDate, endDate]);
+
+  async function exportToCsv(recordsNum) {
+    const index = order === "desc" ? mainIndex : replicaIndex;
+
+    const { hits, nbHits } = await index.search(query, {
+      filters: status,
+      numericFilters: recordDateRange,
+      cacheable: false,
+      hitsPerPage: recordsNum,
+    });
+
+    const rows = hits.map((data) => ({
+      complainant: data.reportee,
+      complaint: data.offense,
+      location: data.location,
+      date: formatDateString(data.timestamp),
+    }));
+
+    const worksheet = XLSX.utils.json_to_sheet(rows);
+    const workbook = XLSX.utils.book_new();
+    XLSX.utils.book_append_sheet(workbook, worksheet, "Dates");
+
+    XLSX.utils.sheet_add_aoa(
+      worksheet,
+      [["Complainant", "Complaint", "Location", "Date"]],
+      {
+        origin: "A1",
+      }
+    );
+
+    const columns_width = ["complainant", "complaint", "location", "date"].map(
+      (data) => {
+        const max_width = rows.reduce(
+          (w, r) => Math.max(w, r[data].length),
+          10
+        );
+        return { wch: max_width };
+      }
+    );
+    worksheet["!cols"] = columns_width;
+
+    XLSX.writeFile(workbook, "Record.xlsx", { compression: true });
+  }
 
   return (
     <>
@@ -276,6 +380,10 @@ export default function ReportTable() {
           setStatus={setStatus}
           setYear={setYear}
           setRefresh={setRefresh}
+          setStartDate={setStartDate}
+          setEndDate={setEndDate}
+          startDate={startDate}
+          endDate={endDate}
         />
         <TableContainer sx={{ maxHeight: 440 }}>
           <Table stickyHeader aria-label="sticky table">
@@ -326,7 +434,9 @@ export default function ReportTable() {
                               className={`MUI-table-cell-status-circle status-${value}`}
                             ></div>
                           )}
-                          {value}
+                          {column.id === "timestamp"
+                            ? formatDateString(value)
+                            : value}
                         </TableCell>
                       );
                     })}
@@ -354,6 +464,7 @@ export default function ReportTable() {
           onRowsPerPageChange={handleChangeRowsPerPage}
         />
       </Paper>
+      <ExportBtn exportHandler={exportToCsv} />
     </>
   );
 }

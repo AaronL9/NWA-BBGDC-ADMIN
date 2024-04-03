@@ -1,19 +1,27 @@
 import PropTypes from "prop-types";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { toDateTime } from "../../util/dateFormatter.js";
 import LoadingButton from "@mui/lab/LoadingButton";
 import EditIcon from "@mui/icons-material/Edit";
 import DoneIcon from "@mui/icons-material/Done";
 import StatusMenu from "./StatusMenu.jsx";
 import ConfirmDeleteReport from "./ConfirmDeleteReport.jsx";
+import Stack from "@mui/material/Stack";
+import Rating from "@mui/material/Rating";
 
 // firebase
 import { db } from "../../config/firebase";
-import { doc, updateDoc } from "firebase/firestore";
+import { doc, updateDoc, getDoc } from "firebase/firestore";
+
+// components
 import Spinner from "../global/spinner/Spinner.jsx";
 import CustomizedSnackbars from "../global/snackbar/CustomizedSnackbars.jsx";
+import AssignPatrollerModal from "./AssignPatrollerModal.jsx";
+import { useParams } from "react-router";
+import ReportMedia from "./ReportMedia.jsx";
 
-export default function ReportForm({ data, onChangeHandler }) {
+export default function ReportForm({ data, onChangeHandler, fetchReport }) {
+  const { id } = useParams();
   const [isDisabled, setIsDisabled] = useState(true);
 
   const [loading, setLoading] = useState(false);
@@ -93,7 +101,7 @@ export default function ReportForm({ data, onChangeHandler }) {
                     />
                   </div>
                   <div>
-                    <label htmlFor="reportee-name">Reportee:</label>
+                    <label htmlFor="reportee-name">Complainant:</label>
                     <input
                       id="reportee-name"
                       type="text"
@@ -148,9 +156,86 @@ export default function ReportForm({ data, onChangeHandler }) {
                   }
                   disabled={isDisabled}
                 ></textarea>
+                <div className="report-form__media">
+                  {data.imageURL.map((url, index) => (
+                    <ReportMedia key={index} url={url} />
+                  ))}
+                  {data?.videoURL.length !== 0 && (
+                    <a href={data.videoURL[0]} target="_blank" rel="noreferrer">
+                      <img
+                        className={"loaded"}
+                        src={
+                          "https://awlights.com/wp-content/uploads/sites/31/2017/05/video-placeholder.png"
+                        }
+                      />
+                    </a>
+                  )}
+                </div>
               </td>
             </tr>
           </tbody>
+          <tfoot style={{ backgroundColor: "#f0f2fa" }}>
+            <tr>
+              <td>
+                <div>
+                  <Stack direction="row" justifyContent="space-between">
+                    <h3>Patroller Report</h3>
+                    <AssignPatrollerModal fetchReport={fetchReport} />
+                  </Stack>
+                </div>
+                {data?.assignPatroller &&
+                  data.assignPatroller.map((data, index) => (
+                    <p key={index}>{data}</p>
+                  ))}
+                <textarea
+                  style={{
+                    borderRadius: 8,
+                    marginTop: "1rem",
+                    backgroundColor: "#f4f4f8",
+                  }}
+                  rows={5}
+                  value={data?.action?.description ?? ""}
+                  disabled
+                />
+                <div className="report-form__media">
+                  {data?.action?.photoURL.length > 0 &&
+                    data.action.photoURL.map((url, index) => (
+                      <ReportMedia key={index} url={url} />
+                    ))}
+                </div>
+              </td>
+            </tr>
+            <tr>
+              <td>
+                <div>
+                  <Stack direction="row" justifyContent="space-between">
+                    <h3>Ratings</h3>
+                  </Stack>
+                </div>
+
+                {data?.ratings ? (
+                  <Rating
+                    name="read-only"
+                    value={data.ratings.value}
+                    readOnly
+                  />
+                ) : (
+                  <p>No ratings</p>
+                )}
+                <textarea
+                  style={{
+                    borderRadius: 8,
+                    marginTop: "1rem",
+                    backgroundColor: "#f4f4f8",
+                  }}
+                  rows={5}
+                  value={data?.ratings?.description ?? ""}
+                  disabled
+                  placeholder="Complainant Feedback..."
+                />
+              </td>
+            </tr>
+          </tfoot>
         </table>
       </form>
     </>

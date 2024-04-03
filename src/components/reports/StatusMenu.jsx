@@ -6,8 +6,10 @@ import PropTypes from "prop-types";
 import { deleteDoc, doc, updateDoc } from "firebase/firestore";
 import { db } from "../../config/firebase";
 import Spinner from "../global/spinner/Spinner";
+import { AuthContext } from "../../context/AuthContext";
 
 export default function StatusMenu({ data, onChangeHandler, docID }) {
+  const authCtx = React.useContext(AuthContext);
   const [anchorEl, setAnchorEl] = React.useState(null);
   const [loading, setLoading] = React.useState(false);
 
@@ -28,6 +30,17 @@ export default function StatusMenu({ data, onChangeHandler, docID }) {
 
       if (value === "resolved") {
         await deleteDoc(doc(db, "live_location", docID));
+        fetch(
+          `${import.meta.env.VITE_API_ENDPOINT}/api/push/news-notification`,
+          {
+            method: "POST",
+            body: JSON.stringify({ title: "Your report has been resolved" }),
+            headers: {
+              "Content-Type": "application/json",
+              Authorization: authCtx.admin.accessToken,
+            },
+          }
+        );
       }
     } catch (error) {
       alert(error.message);

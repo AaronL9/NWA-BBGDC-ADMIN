@@ -20,7 +20,7 @@ export default function StatusMenu({ status, uid }) {
     const value = disabled ? "Disabled" : "Active";
     try {
       const response = await fetch(
-        `http://localhost:5000/api/admin/change-user-status`,
+        `${import.meta.env.VITE_API_ENDPOINT}/api/admin/change-user-status`,
         {
           method: "POST",
           body: JSON.stringify({ uid, disabled }),

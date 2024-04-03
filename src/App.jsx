@@ -26,6 +26,9 @@ import AllLocation from "./pages/patrollers/Tabs/AllLocation.jsx";
 import Users from "./pages/users/Users.jsx";
 import Profile from "./pages/Profile/Profile.jsx";
 import ForgotPassword from "./pages/auth/ForgotPassword.jsx";
+import PieChartAnalytics from "./pages/analytics/PieChartAnalytics.jsx";
+import BarChartAnalytics from "./pages/analytics/BarChartAnalytics.jsx";
+import BarChartAnalyticsSuburban from "./pages/analytics/BarChartAnalyticsSuburban.jsx";
 
 const router = createBrowserRouter(
   createRoutesFromElements(
@@ -39,7 +42,14 @@ const router = createBrowserRouter(
           <Route path="dashboard" element={<Dashboard />} />
           <Route path="reports" element={<Reports />} />
           <Route path="reports/:id" element={<ReportView />} />
-          <Route path="analytics" element={<Analytics />} />
+          <Route path="analytics" element={<Analytics />}>
+            <Route index element={<PieChartAnalytics />} />
+            <Route path="barchart" element={<BarChartAnalytics />} />
+            <Route
+              path="barchart-complaints-suburban"
+              element={<BarChartAnalyticsSuburban />}
+            />
+          </Route>
           <Route path="news" element={<Articles />} />
           <Route path="news/:id" element={<EditArticle />} />
           <Route path="publish-news" element={<PublishArticle />} />

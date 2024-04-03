@@ -21,6 +21,20 @@ export default function PieChartWithCustomizedLabel({ data }) {
 
   return (
     <PieChart
+      colors={[
+        "#5668e2",
+        "#8a56e2",
+        "#cf56e2",
+        "#e256ae",
+        "#e25668",
+        "#e28956",
+        "#e2cf56",
+        "#aee256",
+        "#aee256",
+        "#56e289",
+        "#56e2cf",
+        "#56aee2",
+      ]}
       series={[
         {
           outerRadius: 160,

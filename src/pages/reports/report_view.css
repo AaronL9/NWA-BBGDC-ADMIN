@@ -115,13 +115,11 @@
   flex-wrap: wrap;
   flex: 1;
   justify-content: flex-start;
-  background-color: white;
-  padding: 1rem;
 }
 .report-form__media img,
 .report-form__image-wrapper {
-  width: 250px;
-  height: 200px;
+  width: 100px;
+  height: 100px;
   object-fit: cover;
   border-radius: 8px;
   box-shadow: rgba(149, 157, 165, 0.2) 0px 8px 24px;
