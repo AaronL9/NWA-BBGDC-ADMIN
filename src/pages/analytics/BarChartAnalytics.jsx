@@ -18,8 +18,15 @@ export default function BarChartAnalytics() {
   return (
     <Stack direction="row">
       <BarChart
+        colors={["#e49e00"]}
         dataset={data}
-        yAxis={[{ scaleType: "band", dataKey: "area" }]}
+        yAxis={[
+          {
+            scaleType: "band",
+            dataKey: "area",
+            tickLabelStyle: { textTransform: "capitalize" },
+          },
+        ]}
         series={[
           { dataKey: "data", label: "Reported Complaints", valueFormatter },
         ]}

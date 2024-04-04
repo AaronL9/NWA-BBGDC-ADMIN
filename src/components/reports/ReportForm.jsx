@@ -1,6 +1,6 @@
 import PropTypes from "prop-types";
-import { useEffect, useState } from "react";
-import { toDateTime } from "../../util/dateFormatter.js";
+import { useState } from "react";
+import { formatDateString } from "../../util/dateFormatter.js";
 import LoadingButton from "@mui/lab/LoadingButton";
 import EditIcon from "@mui/icons-material/Edit";
 import DoneIcon from "@mui/icons-material/Done";
@@ -90,26 +90,15 @@ export default function ReportForm({ data, onChangeHandler, fetchReport }) {
                 <section className="report-form__first-cell">
                   <div>
                     <label htmlFor="crime-type">Crime/Incident:</label>
-                    <input
-                      id="crime-type"
-                      type="text"
-                      value={data.offense}
-                      name="offense"
-                      onChange={onChangeHandler}
-                      disabled={true}
-                      style={{ textTransform: "capitalize" }}
-                    />
+                    <span style={{ textTransform: "capitalize" }}>
+                      {data.offense}
+                    </span>
                   </div>
                   <div>
                     <label htmlFor="reportee-name">Complainant:</label>
-                    <input
-                      id="reportee-name"
-                      type="text"
-                      value={data.reporteeName}
-                      name="reporteeName"
-                      onChange={onChangeHandler}
-                      disabled={true}
-                    />
+                    <span style={{ textTransform: "capitalize" }}>
+                      {data.reporteeName}
+                    </span>
                   </div>
                 </section>
               </td>
@@ -117,13 +106,7 @@ export default function ReportForm({ data, onChangeHandler, fetchReport }) {
             <tr>
               <td>
                 <label htmlFor="date">Date/Time Reported:</label>
-                <input
-                  id="date"
-                  type="datetime-local"
-                  name="date"
-                  value={toDateTime(data.timestamp)}
-                  disabled={true}
-                />
+                <span>{formatDateString(data.timestamp)}</span>
               </td>
             </tr>
             <tr>
