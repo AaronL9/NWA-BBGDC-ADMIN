@@ -62,13 +62,15 @@ export default function BarChartAnalyticsSuburban() {
               {
                 scaleType: "band",
                 dataKey: "complaint",
+                tickLabelStyle: { textTransform: "capitalize" },
               },
             ]}
             series={[{ dataKey: "data", valueFormatter }]}
             layout="horizontal"
             xAxis={[
               {
-                label: category,
+                label: category.split("_").join(" "),
+                labelStyle: { textTransform: "capitalize" },
               },
             ]}
             {...chartSetting}

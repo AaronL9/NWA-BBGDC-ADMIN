@@ -26,7 +26,7 @@ export function toDateTime(unixTimestamp) {
 export function formatDateString(unixTimestamp) {
   const dateObject = fromUnixTime(Math.floor(unixTimestamp / 1000));
 
-  return format(dateObject, "MMM d yyyy hh:mm a");
+  return format(dateObject, "MMMM d yyyy hh:mm a");
 }
 
 export function convertDateFormat(timestamp) {

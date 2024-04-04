@@ -51,23 +51,31 @@ export default function PatrollerMapView({ coords }) {
   const { id } = useParams();
 
   const renderRoute = async () => {
-    console.log(
-      `${reportedLocation[0].coords.lat}, ${reportedLocation[0].coords.lng}`
-    );
     try {
       const apiKey = "AIzaSyBLZTo8cFwUX8Ux5TkvSt5oLtd0hURQ6bc";
       const origin = `${coords.lat},${coords.lng}`;
       const destination = `${reportedLocation[0].coords.lat},${reportedLocation[0].coords.lng}`;
 
+      // const response = await fetch(
+      //   `/maps/api/directions/json?destination=${destination}&origin=${origin}&key=AIzaSyBLZ48lDMSumdQ_8ZsYkA7QU-j7tJAdKOE`
+      // );
+
       const response = await fetch(
-        `https://maps.googleapis.com/maps/api/directions/json?destination=${destination}&origin=${origin}&key=${apiKey}`,
-        { mode: "no-cors" }
+        `${import.meta.env.VITE_API_ENDPOINT}/api/public/get-direction`,
+        {
+          method: "POST",
+          body: JSON.stringify({ origin, destination }),
+          headers: {
+            "content-type": "application/json",
+          },
+        }
       );
 
       const data = await response.json();
 
-      if (data.status === "OK") {
-        const points = data.routes[0].overview_polyline.points;
+      if (data.status === "OK" || response.ok) {
+        // const points = data.routes[0].overview_polyline.points;
+        const points = data.polyline;
         const decodedCoordinates = polyline.decode(points);
         const routeCoordinates = decodedCoordinates.map((coord) => ({
           lat: coord[0],
@@ -75,10 +83,10 @@ export default function PatrollerMapView({ coords }) {
         }));
         setRouteCoordinates(routeCoordinates);
       } else {
-        alert("Error fetching directions:", data.status);
+        console.error("Can't fetching directions:", data.status);
       }
     } catch (error) {
-      alert("Error fetching directions:", error.message);
+      console.error(error);
     }
   };
 
