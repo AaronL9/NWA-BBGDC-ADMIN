@@ -60,7 +60,8 @@ export default function PatrollerMapView({ coords }) {
       const destination = `${reportedLocation[0].coords.lat},${reportedLocation[0].coords.lng}`;
 
       const response = await fetch(
-        `https://maps.googleapis.com/maps/api/directions/json?destination=${destination}&origin=${origin}&key=${apiKey}`
+        `https://maps.googleapis.com/maps/api/directions/json?destination=${destination}&origin=${origin}&key=${apiKey}`,
+        { mode: "no-cors" }
       );
 
       const data = await response.json();
