@@ -60,7 +60,7 @@ export default function PatrollerMapView({ coords }) {
       const destination = `${reportedLocation[0].coords.lat},${reportedLocation[0].coords.lng}`;
 
       const response = await fetch(
-        `/maps/api/directions/json?destination=${destination}&origin=${origin}&key=${apiKey}`
+        `/api/directions/json?destination=${destination}&origin=${origin}&key=${apiKey}`
       );
 
       const data = await response.json();
@@ -72,7 +72,6 @@ export default function PatrollerMapView({ coords }) {
           lat: coord[0],
           lng: coord[1],
         }));
-        console.log(routeCoordinates);
         setRouteCoordinates(routeCoordinates);
       } else {
         alert("Error fetching directions:", data.status);
