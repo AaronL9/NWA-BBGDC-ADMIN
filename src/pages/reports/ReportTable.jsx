@@ -7,7 +7,7 @@ import TableContainer from "@mui/material/TableContainer";
 import TableHead from "@mui/material/TableHead";
 import TablePagination from "@mui/material/TablePagination";
 import TableRow from "@mui/material/TableRow";
-import { TableSortLabel, Toolbar, Typography } from "@mui/material";
+import { Stack, TableSortLabel, Toolbar, Typography } from "@mui/material";
 import {
   formatDateReport,
   formatDateString,
@@ -30,6 +30,9 @@ import { AdapterDateFns } from "@mui/x-date-pickers/AdapterDateFns";
 import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
 import { DatePicker } from "@mui/x-date-pickers/DatePicker";
 import ExportBtn from "../../components/reports/ExportBtn.jsx";
+import ArrowOutwardIcon from "@mui/icons-material/ArrowOutward";
+import Button from "@mui/material/Button";
+
 import XLSX from "xlsx";
 
 const searchClient = algoliasearch(
@@ -464,7 +467,21 @@ export default function ReportTable() {
           onRowsPerPageChange={handleChangeRowsPerPage}
         />
       </Paper>
-      <ExportBtn exportHandler={exportToCsv} />
+      <Stack
+        direction="row"
+        justifyContent="flex-end"
+        sx={{ marginTop: "1rem" }}
+      >
+        <Button
+          variant="contained"
+          color="success"
+          startIcon={<ArrowOutwardIcon />}
+          onClick={() => exportToCsv(1000)}
+        >
+          Export to csv
+        </Button>
+      </Stack>
+      {/* <ExportBtn exportHandler={exportToCsv} /> */}
     </>
   );
 }
